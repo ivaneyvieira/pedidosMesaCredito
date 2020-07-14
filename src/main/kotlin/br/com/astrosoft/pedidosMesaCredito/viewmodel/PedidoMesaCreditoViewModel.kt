@@ -7,7 +7,7 @@ import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.ANALISE
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.APROVADO
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.NOVO
-import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.REPOVADO
+import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.REPROVADO
 import br.com.astrosoft.pedidosMesaCredito.model.beans.UserSaci
 
 class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView): ViewModel<IPedidoMesaCreditoView>(view) {
@@ -67,10 +67,10 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView): ViewModel<IPedid
   fun marcaStatusCrediario(pedido: PedidoMesaCredito, status: StatusCrediario, userSaci: UserSaci) = exec {
     pedido.marcaStatusCrediario(status, userSaci)
     when(status) {
-      NOVO     -> updateGridNovo()
-      ANALISE  -> updateGridAnalise()
-      APROVADO -> updateGridAprovado()
-      REPOVADO -> updateGridReprovado()
+      NOVO      -> updateGridNovo()
+      ANALISE   -> updateGridAnalise()
+      APROVADO  -> updateGridAprovado()
+      REPROVADO -> updateGridReprovado()
     }
     view.selectTab(status)
   }
@@ -122,7 +122,7 @@ interface IPedidoMesaCreditoView: IView {
   }
   
   fun marcaReprovado(pedidoMesaCredito: PedidoMesaCredito?) {
-    marcaStatusCrediario(pedidoMesaCredito, REPOVADO)
+    marcaStatusCrediario(pedidoMesaCredito, REPROVADO)
   }
   
   fun selectTab(status: StatusCrediario)

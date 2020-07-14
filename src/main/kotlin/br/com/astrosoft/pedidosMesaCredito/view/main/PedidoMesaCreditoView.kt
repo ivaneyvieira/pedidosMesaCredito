@@ -8,7 +8,7 @@ import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.ANALISE
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.APROVADO
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.NOVO
-import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.REPOVADO
+import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.REPROVADO
 import br.com.astrosoft.pedidosMesaCredito.model.beans.UserSaci
 import br.com.astrosoft.pedidosMesaCredito.view.layout.PedidoMesaCreditoLayout
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroAnalise
@@ -23,6 +23,9 @@ import com.github.mvysny.karibudsl.v10.bind
 import com.github.mvysny.karibudsl.v10.passwordField
 import com.github.mvysny.karibudsl.v10.tabSheet
 import com.github.mvysny.karibudsl.v10.textField
+import com.vaadin.flow.component.AttachEvent
+import com.vaadin.flow.component.DetachEvent
+import com.vaadin.flow.component.UI
 import com.vaadin.flow.component.dependency.HtmlImport
 import com.vaadin.flow.component.formlayout.FormLayout
 import com.vaadin.flow.component.textfield.TextFieldVariant.LUMO_SMALL
@@ -34,6 +37,8 @@ import com.vaadin.flow.router.Route
 @PageTitle(AppConfig.title)
 @HtmlImport("frontend://styles/shared-styles.html")
 class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMesaCreditoView {
+  lateinit var thread : FeederThread
+  
   private var tabMain: TabSheet
   private val gridNovo = PainelGridNovo(this) {viewModel.updateGridNovo()}
   private val gridAnalise = PainelGridAnalise(this) {viewModel.updateGridAnalise()}
@@ -42,6 +47,15 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
   override val viewModel: PedidoMesaCreditoViewModel = PedidoMesaCreditoViewModel(this)
   
   override fun isAccept() = true
+  
+  override fun onAttach(attachEvent: AttachEvent) {
+    thread = FeederThread(attachEvent.ui, viewModel)
+    thread.start()
+  }
+  
+  override fun onDetach(detachEvent: DetachEvent?) {
+    thread.interrupt()
+  }
   
   init {
     tabMain = tabSheet {
@@ -86,11 +100,11 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
   }
   
   override fun selectTab(status: StatusCrediario) {
-    when(status){
-      NOVO     -> tabMain.selectedIndex = 0
-      ANALISE  -> tabMain.selectedIndex = 1
-      APROVADO -> tabMain.selectedIndex = 2
-      REPOVADO -> tabMain.selectedIndex = 3
+    when(status) {
+      NOVO      -> tabMain.selectedIndex = 0
+      ANALISE   -> tabMain.selectedIndex = 1
+      APROVADO  -> tabMain.selectedIndex = 2
+      REPROVADO -> tabMain.selectedIndex = 3
     }
   }
   
@@ -119,13 +133,26 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
       action(pedidoMesaCredito)
   }
   
-
-  
   companion object {
     const val TAB_NOVO: String = "Novos"
     const val TAB_ANALISE: String = "Em Analise"
     const val TAB_APROVADO: String = "Aprovado"
     const val TAB_REPROVADO: String = "Reprovado"
+  }
+  
+  class FeederThread(private val ui: UI, val viewModel: PedidoMesaCreditoViewModel): Thread() {
+    override fun run() {
+      try {
+        while(true) {
+          sleep(10000)
+
+          ui.access {viewModel.updateGridNovo()}
+        }
+
+      } catch(e: InterruptedException) {
+        e.printStackTrace()
+      }
+    }
   }
 }
 

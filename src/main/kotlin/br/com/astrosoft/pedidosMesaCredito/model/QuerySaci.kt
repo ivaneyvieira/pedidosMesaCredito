@@ -38,7 +38,7 @@ class QuerySaci: QueryDB(driver, url, username, password) {
       LocalDate.now()
         .toSaciDate();
     return query(sql, PedidoMesaCredito::class) {
-      addOptionalParameter("date", data)
+      addOptionalParameter("date", 20200713)
     }
   }
   

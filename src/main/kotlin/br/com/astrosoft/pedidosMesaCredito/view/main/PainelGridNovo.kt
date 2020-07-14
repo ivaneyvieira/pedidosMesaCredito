@@ -20,6 +20,7 @@ class PainelGridNovo(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
     colDataHoraPedido()
     colNome()
     colFilial()
+    colStatus()
     colValor()
     colParcelasDesc()
   }

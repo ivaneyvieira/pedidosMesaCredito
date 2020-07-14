@@ -25,6 +25,7 @@ class PainelGridAnalise(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit): 
     colDataHoraPedido()
     colNome()
     colFilial()
+    colStatus()
     colValor()
     colParcelasDesc()
     colAnalista()

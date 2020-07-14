@@ -34,6 +34,10 @@ fun Grid<PedidoMesaCredito>.colAnalista() = addColumnString(PedidoMesaCredito::a
   setHeader("Analista")
 }
 
+fun Grid<PedidoMesaCredito>.colStatus() = addColumnString(PedidoMesaCredito::statusStr) {
+  setHeader("Status")
+}
+
 fun Grid<PedidoMesaCredito>.colFilial() = addColumnString(PedidoMesaCredito::filial) {
   setHeader("Filial")
 }
