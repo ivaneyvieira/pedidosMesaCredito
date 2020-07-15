@@ -21,6 +21,7 @@ class PainelGridPendente(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
     colNome()
     colFilial()
     colStatus()
+    colEntrada()
     colValor()
     colParcelasDesc()
     colAnalista()

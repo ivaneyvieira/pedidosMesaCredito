@@ -56,6 +56,11 @@ fun Grid<PedidoMesaCredito>.colValor() = addColumnDouble(PedidoMesaCredito::valo
   isSortable = false
 }
 
+fun Grid<PedidoMesaCredito>.colEntrada() = addColumnDouble(PedidoMesaCredito::entrada) {
+  setHeader("Entrada")
+  isSortable = false
+}
+
 fun Grid<PedidoMesaCredito>.colParcelasDesc() = addColumnString(PedidoMesaCredito::parcelaDesc) {
   setHeader("Parcela")
   isSortable = false
