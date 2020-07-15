@@ -17,8 +17,9 @@ class PainelGridAberto(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
     addColumnButton(VaadinIcon.LIST_UL, view::marcaAnalise) {
       setHeader("Análise")
     }
-    colnumPedido()
+    colNumPedido()
     colDataHoraPedido()
+    colCodigo()
     colNome()
     colFilial()
     colStatus()

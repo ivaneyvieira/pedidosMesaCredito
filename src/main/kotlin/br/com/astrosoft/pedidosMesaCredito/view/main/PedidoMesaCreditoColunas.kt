@@ -15,8 +15,14 @@ import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.component.textfield.TextFieldVariant
 import com.vaadin.flow.data.value.ValueChangeMode
 
-fun Grid<PedidoMesaCredito>.colnumPedido() = addColumnInt(PedidoMesaCredito::pedido) {
+fun Grid<PedidoMesaCredito>.colNumPedido() = addColumnInt(PedidoMesaCredito::pedido) {
   setHeader("Pedido")
+  width = "7em"
+  isSortable = false
+}
+
+fun Grid<PedidoMesaCredito>.colCodigo() = addColumnInt(PedidoMesaCredito::custno) {
+  setHeader("Código")
   width = "7em"
   isSortable = false
 }

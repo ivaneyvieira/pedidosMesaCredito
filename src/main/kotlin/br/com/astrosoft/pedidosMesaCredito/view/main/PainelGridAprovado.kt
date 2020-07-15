@@ -12,8 +12,9 @@ import com.vaadin.flow.data.provider.ListDataProvider
 class PainelGridAprovado(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit): PainelGrid<PedidoMesaCredito>(view,
                                                                                                                blockUpdate) {
   override fun Grid<PedidoMesaCredito>.gridConfig() {
-    colnumPedido()
+    colNumPedido()
     colDataHoraPedido()
+    colCodigo()
     colNome()
     colFilial()
     colStatus()
