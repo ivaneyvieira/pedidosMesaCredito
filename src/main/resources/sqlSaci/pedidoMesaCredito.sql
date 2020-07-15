@@ -9,7 +9,8 @@ FROM sqldados.paym
 WHERE name LIKE '%CREDIA%';
 
 
-DO @HOJE := :date;
+DO @HOJE := current_date * 1;
+DO @DATA := :date;
 
 DROP TABLE IF EXISTS TPedido;
 CREATE TEMPORARY TABLE TPedido (
@@ -32,8 +33,8 @@ FROM sqldados.eord             AS O
 	       ON S.no = O.storeno
   INNER JOIN TMETODO_CREDIARIO AS M
 	       USING (paymno)
-WHERE date >= @HOJE
-  AND O.storeno IN (1, 3, 5, 6, 8, 9, 10, 11, 12);
+WHERE ((O.date >= @DATA AND O.status IN (:statusSaci)) OR O.date = @HOJE)
+  AND O.storeno IN (1, 3, 5, 8, 9, 11, 12);
 
 DROP TABLE IF EXISTS TSIMULADOR;
 CREATE TEMPORARY TABLE TSIMULADOR (
@@ -72,4 +73,6 @@ FROM TPedido               AS P
 	       USING (storeno, pedido)
   INNER JOIN sqldados.eord AS O
 	       ON O.storeno = P.storeno AND O.ordno = P.pedido
+WHERE O.s15 IN (:status)
+ORDER BY datePedido, timePedido
 

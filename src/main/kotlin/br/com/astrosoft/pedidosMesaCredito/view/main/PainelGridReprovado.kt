@@ -2,12 +2,12 @@ package br.com.astrosoft.pedidosMesaCredito.view.main
 
 import br.com.astrosoft.framework.view.PainelGrid
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
-import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroNovo
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroReprovado
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IPedidoMesaCreditoView
 import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.textfield.IntegerField
 import com.vaadin.flow.component.textfield.TextField
+import com.vaadin.flow.data.provider.ListDataProvider
 
 class PainelGridReprovado(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
   PainelGrid<PedidoMesaCredito>(view, blockUpdate) {
@@ -20,6 +20,9 @@ class PainelGridReprovado(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit)
     colValor()
     colParcelasDesc()
     colAnalista()
+    (dataProvider as ListDataProvider).setSortComparator {o1, o2 ->
+      o1.dataHoraStatus.compareTo(o2.dataHoraStatus)
+    }
   }
   
   override fun filterBar() = FilterBarReprovado()
@@ -27,6 +30,7 @@ class PainelGridReprovado(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit)
   inner class FilterBarReprovado: FilterBar(), IFiltroReprovado {
     lateinit var edtPedido: IntegerField
     lateinit var edtCliente: TextField
+    lateinit var edtAnalista: TextField
     
     override fun FilterBar.contentBlock() {
       edtPedido = pedido {
@@ -35,11 +39,16 @@ class PainelGridReprovado(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit)
       edtCliente = cliente {
         addValueChangeListener {blockUpdate()}
       }
+      edtAnalista = analista {
+        addValueChangeListener {blockUpdate()}
+      }
     }
     
     override fun pedido(): Int = edtPedido.value ?: 0
     
     override fun cliente(): String = edtCliente.value ?: ""
+  
+    override fun analista(): String = edtAnalista.value ?: ""
   }
 }
 

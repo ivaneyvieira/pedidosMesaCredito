@@ -7,13 +7,15 @@ import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.ANALISE
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.APROVADO
-import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.NOVO
+import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.ABERTO
+import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.PENDENTE
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.REPROVADO
 import br.com.astrosoft.pedidosMesaCredito.model.beans.UserSaci
 import br.com.astrosoft.pedidosMesaCredito.view.layout.PedidoMesaCreditoLayout
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroAnalise
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroAprovado
-import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroNovo
+import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroAberto
+import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroPendente
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroReprovado
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IPedidoMesaCreditoView
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.PedidoMesaCreditoViewModel
@@ -40,10 +42,11 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
   lateinit var thread : FeederThread
   
   private var tabMain: TabSheet
-  private val gridNovo = PainelGridNovo(this) {viewModel.updateGridNovo()}
+  private val gridAberto = PainelGridAberto(this) {viewModel.updateGridAberto()}
   private val gridAnalise = PainelGridAnalise(this) {viewModel.updateGridAnalise()}
   private val gridAprovado = PainelGridAprovado(this) {viewModel.updateGridAprovado()}
   private val gridReprovado = PainelGridReprovado(this) {viewModel.updateGridReprovado()}
+  private val gridPendente = PainelGridPendente(this) {viewModel.updateGridPendente()}
   override val viewModel: PedidoMesaCreditoViewModel = PedidoMesaCreditoViewModel(this)
   
   override fun isAccept() = true
@@ -60,16 +63,17 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
   init {
     tabMain = tabSheet {
       setSizeFull()
-      tabGrid(TAB_NOVO, gridNovo)
+      tabGrid(TAB_ABERTO, gridAberto)
       tabGrid(TAB_ANALISE, gridAnalise)
+      tabGrid(TAB_PENDENTE, gridPendente)
       tabGrid(TAB_APROVADO, gridAprovado)
       tabGrid(TAB_REPROVADO, gridReprovado)
     }
-    viewModel.updateGridNovo()
+    viewModel.updateGridAberto()
   }
   
-  override fun updateGridNovo(itens: List<PedidoMesaCredito>) {
-    gridNovo.updateGrid(itens)
+  override fun updateGridAberto(itens: List<PedidoMesaCredito>) {
+    gridAberto.updateGrid(itens)
   }
   
   override fun updateGridAnalise(itens: List<PedidoMesaCredito>) {
@@ -84,14 +88,20 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
     gridReprovado.updateGrid(itens)
   }
   
-  override val filtroNovo: IFiltroNovo
-    get() = gridNovo.filterBar as IFiltroNovo
+  override fun updateGridPendente(itens: List<PedidoMesaCredito>) {
+    gridPendente.updateGrid(itens)
+  }
+  
+  override val filtroAberto: IFiltroAberto
+    get() = gridAberto.filterBar as IFiltroAberto
   override val filtroAnalise: IFiltroAnalise
     get() = gridAnalise.filterBar as IFiltroAnalise
   override val filtroAprovado: IFiltroAprovado
     get() = gridAprovado.filterBar as IFiltroAprovado
   override val filtroReprovado: IFiltroReprovado
     get() = gridReprovado.filterBar as IFiltroReprovado
+  override val filtroPendente: IFiltroPendente
+    get() = gridPendente.filterBar as IFiltroPendente
   
   override fun marcaStatusCrediario(pedidoMesaCredito: PedidoMesaCredito?, status: StatusCrediario) {
     marcaUsuario(pedidoMesaCredito) {user, pedido ->
@@ -101,10 +111,11 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
   
   override fun selectTab(status: StatusCrediario) {
     when(status) {
-      NOVO      -> tabMain.selectedIndex = 0
-      ANALISE   -> tabMain.selectedIndex = 1
-      APROVADO  -> tabMain.selectedIndex = 2
-      REPROVADO -> tabMain.selectedIndex = 3
+      ABERTO  -> tabMain.selectedIndex = 0
+      ANALISE  -> tabMain.selectedIndex = 1
+      PENDENTE -> tabMain.selectedIndex = 2
+      APROVADO -> tabMain.selectedIndex = 3
+      REPROVADO -> tabMain.selectedIndex = 4
     }
   }
   
@@ -134,19 +145,20 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
   }
   
   companion object {
-    const val TAB_NOVO: String = "Novos"
+    const val TAB_ABERTO: String = "Aberto"
     const val TAB_ANALISE: String = "Em Analise"
     const val TAB_APROVADO: String = "Aprovado"
     const val TAB_REPROVADO: String = "Reprovado"
+    const val TAB_PENDENTE: String = "Pendente"
   }
   
   class FeederThread(private val ui: UI, val viewModel: PedidoMesaCreditoViewModel): Thread() {
     override fun run() {
       try {
         while(true) {
-          sleep(10000)
+          sleep(30000)
 
-          ui.access {viewModel.updateGridNovo()}
+          ui.access {viewModel.updateGridAberto()}
         }
 
       } catch(e: InterruptedException) {

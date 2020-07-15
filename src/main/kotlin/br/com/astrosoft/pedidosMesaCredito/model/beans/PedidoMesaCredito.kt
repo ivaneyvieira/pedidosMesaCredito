@@ -1,9 +1,10 @@
 package br.com.astrosoft.pedidosMesaCredito.model.beans
 
 import br.com.astrosoft.AppConfig
+import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.ABERTO
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.ANALISE
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.APROVADO
-import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.NOVO
+import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.PENDENTE
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.REPROVADO
 import br.com.astrosoft.pedidosMesaCredito.model.saci
 import java.text.DecimalFormat
@@ -34,6 +35,7 @@ data class PedidoMesaCredito(val storeno: Int,
   fun filtroPedido(pedidoNum: Int) = (pedidoNum == this.pedido) || (pedidoNum == 0)
   
   fun filtroCliente(cliente: String) = (this.nome.startsWith(cliente)) || (cliente == "")
+  fun filtroAnalista(analista: String) = (this.analistaName.startsWith(analista)) || (analista == "")
   
   val dataHoraStatus
     get() = LocalDateTime.of(datePedido, timePedido)
@@ -47,63 +49,61 @@ data class PedidoMesaCredito(val storeno: Int,
     get() = saci.findAllUser()
               .firstOrNull {it.no == userAnalise}?.login ?: ""
   val isUserValid
-  get() = userSaci.admin || userSaci.no == userAnalise
-  val isNovo
-    get() = statusCrediarioEnum == NOVO && statusPedidoEnum.analise
-  val isAnalise
-    get() = statusCrediarioEnum == ANALISE && isUserValid
-  val isAprovado
-    get() = statusCrediarioEnum == APROVADO && isUserValid
-  val isReprovado
-    get() = statusCrediarioEnum == REPROVADO && isUserValid
+    get() = userSaci.admin || userSaci.no == userAnalise
   val statusCrediarioEnum
     get() = StatusCrediario.valueByNum(statusCrediario)
   val statusPedidoEnum
     get() = StatusPedido.valueByNum(status)
-  val statusStr
+  val statusPedidoStr
     get() = statusPedidoEnum.descricao
+  val statusCrediarioStr
+    get() = statusCrediarioEnum.descricao
   
   companion object {
     private val userSaci: UserSaci by lazy {
       AppConfig.userSaci as UserSaci
     }
     
-    @Synchronized
-    fun updateList(): List<PedidoMesaCredito> {
-      return saci.listaPedidoRetira()
+    private fun listaPedidos(status: List<StatusCrediario>): List<PedidoMesaCredito> {
+      return saci.listaPedidoRetira(status.map {it.num})
     }
     
-    fun listaNovo(): List<PedidoMesaCredito> {
-      return updateList().filter {it.isNovo}
+    fun listaAberto(): List<PedidoMesaCredito> {
+      return listaPedidos(listOf(ABERTO, ANALISE))
     }
     
     fun listaAnalise(): List<PedidoMesaCredito> {
-      return updateList().filter {it.isAnalise}
+      return listaPedidos(listOf(ANALISE))
     }
     
     fun listaAprovado(): List<PedidoMesaCredito> {
-      return updateList().filter {it.isAprovado}
+      return listaPedidos(listOf(APROVADO))
     }
     
     fun listaReprovado(): List<PedidoMesaCredito> {
-      return updateList().filter {it.isReprovado}
+      return listaPedidos(listOf(REPROVADO))
+    }
+    
+    fun listaPendente(): List<PedidoMesaCredito> {
+      return listaPedidos(listOf(PENDENTE))
     }
   }
 }
 
-enum class StatusCrediario(val num: Int, val descicao: String) {
-  NOVO(0, "Novo"),
+enum class StatusCrediario(val num: Int, val descricao: String) {
+  ABERTO(0, "Aberto"),
   ANALISE(1, "Em análise"),
   APROVADO(2, "Aprovado"),
-  REPROVADO(3, "Reprovado");
+  REPROVADO(3, "Reprovado"),
+  PENDENTE(4, "Pendencia");
   
   companion object {
     fun valueByNum(num: Int) = values()
-                                 .firstOrNull {it.num == num} ?: NOVO
+                                 .firstOrNull {it.num == num} ?: ABERTO
   }
 }
 
-enum class StatusPedido(val numero: Int, val descricao: String, val analise : Boolean) {
+enum class StatusPedido(val numero: Int, val descricao: String, val analise: Boolean) {
   INCLUIDO(0, "Incluído", true),
   ORCADO(1, "Orçado", true),
   RESERVADO(2, "Reservado", true),

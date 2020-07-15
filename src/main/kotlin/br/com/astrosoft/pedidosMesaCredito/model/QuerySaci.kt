@@ -4,6 +4,8 @@ import br.com.astrosoft.framework.model.QueryDB
 import br.com.astrosoft.framework.util.DB
 import br.com.astrosoft.framework.util.toSaciDate
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
+import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario
+import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusPedido
 import br.com.astrosoft.pedidosMesaCredito.model.beans.UserSaci
 import java.time.LocalDate
 
@@ -26,19 +28,20 @@ class QuerySaci: QueryDB(driver, url, username, password) {
   fun updateUser(user: UserSaci) {
     val sql = "/sqlSaci/updateUser.sql"
     script(sql) {
-      addOptionalParameter("login", user.login)
+      addOptionalParameter("no", user.no)
       addOptionalParameter("bitAcesso", user.bitAcesso)
       addOptionalParameter("storeno", user.storeno)
     }
   }
   
-  fun listaPedidoRetira(): List<PedidoMesaCredito> {
+  fun listaPedidoRetira(status : List<Int>): List<PedidoMesaCredito> {
     val sql = "/sqlSaci/pedidoMesaCredito.sql"
-    val data =
-      LocalDate.now()
-        .toSaciDate();
+    val data = 20200713
+    val statusSaci = StatusPedido.values().filter{it.analise}.map {it.numero}
     return query(sql, PedidoMesaCredito::class) {
-      addOptionalParameter("date", 20200713)
+      addOptionalParameter("date", data)
+      addOptionalParameter("status", status)
+      addOptionalParameter("statusSaci", statusSaci)
     }
   }
   

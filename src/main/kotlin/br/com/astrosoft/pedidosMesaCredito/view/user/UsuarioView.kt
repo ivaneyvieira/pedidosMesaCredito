@@ -9,7 +9,7 @@ import br.com.astrosoft.pedidosMesaCredito.viewmodel.IUsuarioView
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.UsuarioViewModel
 import com.github.mvysny.karibudsl.v10.alignSelf
 import com.github.mvysny.karibudsl.v10.button
-import com.github.mvysny.karibudsl.v10.checkBox
+import com.github.mvysny.karibudsl.v10.comboBox
 import com.github.mvysny.karibudsl.v10.formLayout
 import com.github.mvysny.karibudsl.v10.getColumnBy
 import com.github.mvysny.karibudsl.v10.horizontalLayout
@@ -22,6 +22,7 @@ import com.vaadin.flow.component.ComponentEventListener
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant.LUMO_ERROR
 import com.vaadin.flow.component.button.ButtonVariant.LUMO_PRIMARY
+import com.vaadin.flow.component.combobox.ComboBox.ItemFilter
 import com.vaadin.flow.component.grid.ColumnTextAlign
 import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.grid.GridVariant.LUMO_COLUMN_BORDERS
@@ -33,6 +34,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.END
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.data.binder.Binder
+import com.vaadin.flow.data.renderer.TemplateRenderer
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
 import org.claspina.confirmdialog.ConfirmDialog
@@ -50,7 +52,8 @@ import org.vaadin.gatanaso.MultiselectComboBox
 class UsuarioView: ViewLayout<UsuarioViewModel>(), IUsuarioView {
   override val viewModel = UsuarioViewModel(this)
   
-  override fun isAccept() = AppConfig.userSaci?.roles()?.contains("ADMIN") == true
+  override fun isAccept() = AppConfig.userSaci?.roles()
+    ?.contains("ADMIN") == true
   
   init {
     form("Editor de usuários")
@@ -69,9 +72,9 @@ class UsuarioView: ViewLayout<UsuarioViewModel>(), IUsuarioView {
       .setColumns(UserSaci::no.name, UserSaci::login.name, UserSaci::storeno.name, UserSaci::name.name)
     crud.grid.getColumnBy(UserSaci::storeno)
       .setHeader("Loja")
-  
+    
     crud.grid.addThemeVariants(LUMO_COMPACT, LUMO_ROW_STRIPES, LUMO_COLUMN_BORDERS)
-  
+    
     crud.crudFormFactory = UserCrudFormFactory(viewModel)
     crud.setSizeFull()
     return crud
@@ -114,8 +117,32 @@ class UserCrudFormFactory(private val viewModel: UsuarioViewModel): AbstractCrud
             binder.bind(this, UserSaci::no.name)
           }
         if(operation in listOf(ADD, READ, DELETE, UPDATE))
-          textField("Login") {
-            binder.bind(this, UserSaci::login.name)
+          comboBox<UserSaci>("Login") {
+            val allUser = viewModel.findAllUser()
+            val filter: ItemFilter<UserSaci> =
+              ItemFilter {user: UserSaci, filterString: String ->
+                user.login
+                  .contains(filterString, ignoreCase = true)
+                || user.name
+                  .contains(filterString, ignoreCase = true)
+                || user.no == filterString.toIntOrNull() ?: 0
+              }
+            this.setItems(filter, allUser)
+            this.setItemLabelGenerator(UserSaci::login)
+            this.setRenderer(TemplateRenderer.of<UserSaci>("<div>[[item.login]]<br><small>[[item.nome]]</small></div>")
+                               .withProperty("login") {
+                                 it.login
+                               }
+                               .withProperty("nome") {user ->
+                                 "${user.no} - ${user.name}"
+                               })
+            binder.bind(this, {bean ->
+              bean
+            }, {bean, field ->
+                          bean.no = field.no
+                          bean.name = field.name
+                          bean.login = field.login
+                        })
           }
         if(operation in listOf(READ, DELETE, UPDATE))
           textField("Nome") {
@@ -123,7 +150,7 @@ class UserCrudFormFactory(private val viewModel: UsuarioViewModel): AbstractCrud
             binder.bind(this, UserSaci::name.name)
           }
         if(operation in listOf(ADD, READ, DELETE, UPDATE))
-          integerField ("Loja") {
+          integerField("Loja") {
             isReadOnly = false
             binder.bind(this, UserSaci::storeno.name)
           }

@@ -3,7 +3,7 @@ package br.com.astrosoft.pedidosMesaCredito.view.main
 import br.com.astrosoft.framework.view.PainelGrid
 import br.com.astrosoft.framework.view.addColumnButton
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
-import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroAnalise
+import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroAberto
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IPedidoMesaCreditoView
 import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.icon.VaadinIcon
@@ -11,10 +11,12 @@ import com.vaadin.flow.component.textfield.IntegerField
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.provider.ListDataProvider
 
-class PainelGridAnalise(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit): PainelGrid<PedidoMesaCredito>(view, blockUpdate) {
+class PainelGridAberto(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
+  PainelGrid<PedidoMesaCredito>(view, blockUpdate) {
   override fun Grid<PedidoMesaCredito>.gridConfig() {
-    addColumnButton(VaadinIcon.THUMBS_UP_O, view::marcaAprovado)
-    addColumnButton(VaadinIcon.THUMBS_DOWN_O, view::marcaReprovado)
+    addColumnButton(VaadinIcon.LIST_UL, view::marcaAnalise) {
+      setHeader("Análise")
+    }
     colnumPedido()
     colDataHoraPedido()
     colNome()
@@ -30,7 +32,7 @@ class PainelGridAnalise(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit): 
   
   override fun filterBar() = FilterBarPedido()
   
-  inner class FilterBarPedido: FilterBar(), IFiltroAnalise {
+  inner class FilterBarPedido: FilterBar(), IFiltroAberto {
     lateinit var edtPedido: IntegerField
     lateinit var edtCliente: TextField
     lateinit var edtAnalista: TextField
@@ -50,7 +52,8 @@ class PainelGridAnalise(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit): 
     override fun pedido(): Int = edtPedido.value ?: 0
     
     override fun cliente(): String = edtCliente.value ?: ""
-  
+    
     override fun analista(): String = edtAnalista.value ?: ""
   }
 }
+

@@ -31,12 +31,16 @@ class UserSaci: IUser {
   
   companion object {
     private val BIT_ATIVO = 2.pow(0)
-    
-    fun findAll(): List<UserSaci>? {
+  
+    fun findAllAtivos(): List<UserSaci> {
       return saci.findAllUser()
         .filter {it.ativo}
     }
-    
+  
+    fun findAllUser(): List<UserSaci> {
+      return saci.findAllUser()
+    }
+  
     fun updateUser(user: UserSaci) {
       saci.updateUser(user)
     }

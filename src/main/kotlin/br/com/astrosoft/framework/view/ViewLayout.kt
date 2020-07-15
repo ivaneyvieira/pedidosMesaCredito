@@ -226,9 +226,7 @@ fun <T> (@VaadinDsl Grid<T>).addColumnDate(property: KProperty1<T, Date?>,
   }
   column.width = "10em"
   column.left()
-  
   column.block()
-  
   return column
 }
 
@@ -262,11 +260,6 @@ fun <T> (@VaadinDsl Grid<T>).addColumnTime(property: KProperty1<T, Time?>,
   }
   column.width = "5em"
   column.left()
-  column.setComparator {a, b ->
-    val dataA = property.get(a) ?: Time(0)
-    val dataB = property.get(b) ?: Time(0)
-    dataA.compareTo(dataB)
-  }
   column.block()
   return column
 }
