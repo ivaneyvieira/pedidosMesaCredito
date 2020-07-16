@@ -15,12 +15,14 @@ class PainelGridAnalise(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit): 
   override fun Grid<PedidoMesaCredito>.gridConfig() {
     addColumnButton(VaadinIcon.THUMBS_UP_O, view::marcaAprovado)
     addColumnButton(VaadinIcon.THUMBS_DOWN_O, view::marcaReprovado)
-    colnumPedido()
+    colNumPedido()
     colDataHoraPedido()
+    colCodigo()
     colNome()
     colFilial()
     colStatus()
     colValor()
+    colEntrada()
     colParcelasDesc()
     colAnalista()
     (dataProvider as ListDataProvider).setSortComparator {o1, o2 ->
