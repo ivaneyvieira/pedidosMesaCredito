@@ -10,6 +10,7 @@ import com.vaadin.flow.component.icon.VaadinIcon
 import com.vaadin.flow.component.textfield.IntegerField
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.provider.ListDataProvider
+import com.vaadin.flow.theme.lumo.Lumo
 
 class PainelGridAberto(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
   PainelGrid<PedidoMesaCredito>(view, blockUpdate) {
@@ -23,12 +24,20 @@ class PainelGridAberto(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
     colNome()
     colFilial()
     colStatus()
-    colEntrada()
     colValor()
+    colEntrada()
     colParcelasDesc()
     colAnalista()
     (dataProvider as ListDataProvider).setSortComparator {o1, o2 ->
-      o1.dataHoraStatus.compareTo(o2.dataHoraStatus)
+      val compareStatus = o1.statusCrediario.compareTo(o2.statusCrediario)
+      val compareDataHora = o1.dataHoraStatus.compareTo(o2.dataHoraStatus)
+      if(compareStatus == 0)
+        compareDataHora
+      else
+        compareStatus
+    }
+    this.setClassNameGenerator {
+    
     }
   }
   

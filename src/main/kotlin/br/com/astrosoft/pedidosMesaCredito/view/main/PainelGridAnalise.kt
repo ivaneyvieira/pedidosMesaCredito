@@ -21,8 +21,8 @@ class PainelGridAnalise(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit): 
     colNome()
     colFilial()
     colStatus()
-    colEntrada()
     colValor()
+    colEntrada()
     colParcelasDesc()
     colAnalista()
     (dataProvider as ListDataProvider).setSortComparator {o1, o2 ->

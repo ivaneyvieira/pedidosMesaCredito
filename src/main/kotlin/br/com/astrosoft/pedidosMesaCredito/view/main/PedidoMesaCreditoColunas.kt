@@ -17,13 +17,13 @@ import com.vaadin.flow.data.value.ValueChangeMode
 
 fun Grid<PedidoMesaCredito>.colNumPedido() = addColumnInt(PedidoMesaCredito::pedido) {
   setHeader("Pedido")
-  width = "7em"
+  width = "5em"
   isSortable = false
 }
 
 fun Grid<PedidoMesaCredito>.colCodigo() = addColumnInt(PedidoMesaCredito::custno) {
   setHeader("Código")
-  width = "7em"
+  width = "5em"
   isSortable = false
 }
 
