@@ -12,12 +12,14 @@ import com.vaadin.flow.data.provider.ListDataProvider
 class PainelGridReprovado(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
   PainelGrid<PedidoMesaCredito>(view, blockUpdate) {
   override fun Grid<PedidoMesaCredito>.gridConfig() {
-    colnumPedido()
+    colNumPedido()
     colDataHoraPedido()
+    colCodigo()
     colNome()
     colFilial()
     colStatus()
     colValor()
+    colEntrada()
     colParcelasDesc()
     colAnalista()
     (dataProvider as ListDataProvider).setSortComparator {o1, o2 ->

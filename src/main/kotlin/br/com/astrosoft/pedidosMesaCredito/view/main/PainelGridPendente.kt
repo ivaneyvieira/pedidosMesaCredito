@@ -3,7 +3,6 @@ package br.com.astrosoft.pedidosMesaCredito.view.main
 import br.com.astrosoft.framework.view.PainelGrid
 import br.com.astrosoft.framework.view.addColumnButton
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
-import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroAnalise
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroPendente
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IPedidoMesaCreditoView
 import com.vaadin.flow.component.grid.Grid
@@ -16,12 +15,14 @@ class PainelGridPendente(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
   override fun Grid<PedidoMesaCredito>.gridConfig() {
     addColumnButton(VaadinIcon.THUMBS_UP_O, view::marcaAprovado)
     addColumnButton(VaadinIcon.THUMBS_DOWN_O, view::marcaReprovado)
-    colnumPedido()
+    colNumPedido()
     colDataHoraPedido()
+    colCodigo()
     colNome()
     colFilial()
     colStatus()
     colValor()
+    colEntrada()
     colParcelasDesc()
     colAnalista()
     (dataProvider as ListDataProvider).setSortComparator {o1, o2 ->
