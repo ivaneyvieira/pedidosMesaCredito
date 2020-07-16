@@ -36,9 +36,6 @@ class PainelGridAberto(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
       else
         compareStatus
     }
-    this.setClassNameGenerator {
-    
-    }
   }
   
   override fun filterBar() = FilterBarPedido()
