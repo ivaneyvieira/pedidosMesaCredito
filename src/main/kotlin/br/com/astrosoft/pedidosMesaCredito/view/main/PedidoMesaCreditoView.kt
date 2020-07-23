@@ -53,7 +53,7 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
   
   override fun onAttach(attachEvent: AttachEvent) {
     thread = FeederThread(attachEvent.ui, viewModel)
-    thread.start()
+    //thread.start()
   }
   
   override fun onDetach(detachEvent: DetachEvent?) {
