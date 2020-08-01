@@ -104,6 +104,7 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
     get() = gridPendente.filterBar as IFiltroPendente
   
   override fun marcaStatusCrediario(pedidoMesaCredito: PedidoMesaCredito?, status: StatusCrediario) {
+    //TODO Fazer teste de status válidos
     marcaUsuario(pedidoMesaCredito) {user, pedido ->
       viewModel.marcaStatusCrediario(pedido, status, user)
     }

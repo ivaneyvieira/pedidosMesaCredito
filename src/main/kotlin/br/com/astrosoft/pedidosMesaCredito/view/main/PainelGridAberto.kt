@@ -15,7 +15,7 @@ import com.vaadin.flow.theme.lumo.Lumo
 class PainelGridAberto(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
   PainelGrid<PedidoMesaCredito>(view, blockUpdate) {
   override fun Grid<PedidoMesaCredito>.gridConfig() {
-    addColumnButton(VaadinIcon.LIST_UL, view::marcaAnalise) {
+    addColumnButton(VaadinIcon.LIST_UL, "Envia para analise", view::marcaAnalise) {
       setHeader("Análise")
     }
     colNumPedido()

@@ -35,6 +35,8 @@ data class PedidoMesaCredito(val storeno: Int,
   fun filtroPedido(pedidoNum: Int) = (pedidoNum == this.pedido) || (pedidoNum == 0)
   
   fun filtroCliente(cliente: String) = (this.nome.startsWith(cliente)) || (cliente == "")
+                                       || (this.custno.toString() == cliente)
+  
   fun filtroAnalista(analista: String) = (this.analistaName.startsWith(analista)) || (analista == "")
   
   val dataHoraStatus

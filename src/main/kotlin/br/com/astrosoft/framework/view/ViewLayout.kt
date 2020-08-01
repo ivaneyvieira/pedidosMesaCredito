@@ -13,11 +13,14 @@ import com.github.mvysny.karibudsl.v10.horizontalLayout
 import com.github.mvysny.karibudsl.v10.isExpand
 import com.github.mvysny.karibudsl.v10.onLeftClick
 import com.github.mvysny.karibudsl.v10.sortProperty
+import com.github.mvysny.karibudsl.v10.tooltip
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.ComponentEvent
 import com.vaadin.flow.component.ComponentEventListener
 import com.vaadin.flow.component.DomEvent
 import com.vaadin.flow.component.HasComponents
+import com.vaadin.flow.component.Key
+import com.vaadin.flow.component.Key.ENTER
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant
 import com.vaadin.flow.component.charts.model.style.SolidColor
@@ -46,6 +49,7 @@ import com.vaadin.flow.router.BeforeEnterObserver
 import com.vaadin.flow.router.BeforeLeaveEvent
 import com.vaadin.flow.router.BeforeLeaveObserver
 import com.vaadin.flow.shared.Registration
+import org.claspina.confirmdialog.ButtonOption
 import org.claspina.confirmdialog.ButtonOption.caption
 import org.claspina.confirmdialog.ButtonOption.closeOnClick
 import org.claspina.confirmdialog.ButtonType.OK
@@ -94,7 +98,7 @@ abstract class ViewLayout<VM: ViewModel<*>>: VerticalLayout(), IView, BeforeLeav
     ConfirmDialog.create()
       .withCaption(caption)
       .withMessage(form)
-      .withButton(OK, Runnable {runConfirm()}, caption("Confirma"), closeOnClick(true))
+      .withButton(OK, Runnable {runConfirm()}, caption("Confirma"), closeOnClick(true), ButtonEnter())
       .withCancelButton(caption("Cancela"))
       .open()
   }
@@ -184,7 +188,7 @@ fun <T> (@VaadinDsl Grid<T>).addColumnLocalDate(property: KProperty1<T, LocalDat
   //column.width = "8em"
   column.isAutoWidth = true
   column.left()
-
+  
   column.setComparator {o1, o2 ->
     val value1 = property.get(o1) ?: LocalDate.MIN
     val value2 = property.get(o2) ?: LocalDate.MIN
@@ -206,12 +210,11 @@ fun <T> (@VaadinDsl Grid<T>).addColumnLocalDateTime(property: KProperty1<T, Loca
     val dataB = property.get(b) ?: LocalDateTime.MIN
     dataA.compareTo(dataB)
   }
-
+  
   column.block()
   
   return column
 }
-
 
 fun <T> (@VaadinDsl Grid<T>).addColumnDate(property: KProperty1<T, Date?>,
                                            block: (@VaadinDsl Grid.Column<T>).() -> Unit = {}): Grid.Column<T> {
@@ -282,11 +285,14 @@ fun <T> (@VaadinDsl Grid<T>).addColumnDouble(property: KProperty1<T, Double?>,
 }
 
 fun <T> (@VaadinDsl Grid<T>).addColumnButton(iconButton: VaadinIcon,
+                                             tooltip: String? = null,
                                              execButton: (T) -> Unit = {},
                                              block: (@VaadinDsl Grid.Column<T>).() -> Unit = {}): Grid.Column<T> {
   return addComponentColumn {bean ->
     Icon(iconButton).apply {
       this.style.set("cursor", "pointer");
+      if(tooltip != null)
+        this.tooltip = tooltip
       onLeftClick {
         execButton(bean)
       }
@@ -397,4 +403,10 @@ fun <T> TabSheet.tabGrid(label: String, painelGrid: PainelGrid<T>) = tab {
   }
   button.addThemeVariants(ButtonVariant.LUMO_SMALL)
   this.addComponentAsFirst(button)
+}
+
+class ButtonEnter : ButtonOption() {
+  override fun apply(confirmDialog: ConfirmDialog?, button: Button?) {
+   button?.addClickShortcut(ENTER)
+  }
 }
