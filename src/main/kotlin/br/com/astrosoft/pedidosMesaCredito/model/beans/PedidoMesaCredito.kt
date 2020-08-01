@@ -35,6 +35,8 @@ data class PedidoMesaCredito(val storeno: Int,
   fun filtroPedido(pedidoNum: Int) = (pedidoNum == this.pedido) || (pedidoNum == 0)
   
   fun filtroCliente(cliente: String) = (this.nome.startsWith(cliente)) || (cliente == "")
+                                       || (this.custno.toString() == cliente)
+  
   fun filtroAnalista(analista: String) = (this.analistaName.startsWith(analista)) || (analista == "")
   
   val dataHoraStatus
@@ -53,7 +55,7 @@ data class PedidoMesaCredito(val storeno: Int,
   val statusCrediarioEnum
     get() = StatusCrediario.valueByNum(statusCrediario)
   val statusPedidoEnum
-    get() = StatusPedido.valueByNum(status)
+    get() = StatusSaci.valueByNum(status)
   val statusPedidoStr
     get() = statusPedidoEnum.descricao
   val statusCrediarioStr
@@ -65,7 +67,7 @@ data class PedidoMesaCredito(val storeno: Int,
     }
     
     private fun listaPedidos(status: List<StatusCrediario>): List<PedidoMesaCredito> {
-      return saci.listaPedidoRetira(status.map {it.num})
+      return saci.listaPedidoMesa(status.map {it.num})
     }
     
     fun listaAberto(): List<PedidoMesaCredito> {
@@ -103,7 +105,7 @@ enum class StatusCrediario(val num: Int, val descricao: String) {
   }
 }
 
-enum class StatusPedido(val numero: Int, val descricao: String, val analise: Boolean) {
+enum class StatusSaci(val numero: Int, val descricao: String, val analise: Boolean) {
   INCLUIDO(0, "Incluído", true),
   ORCADO(1, "Orçado", true),
   RESERVADO(2, "Reservado", true),

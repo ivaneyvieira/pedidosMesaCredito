@@ -53,7 +53,7 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
   
   override fun onAttach(attachEvent: AttachEvent) {
     thread = FeederThread(attachEvent.ui, viewModel)
-    thread.start()
+    //thread.start()
   }
   
   override fun onDetach(detachEvent: DetachEvent?) {
@@ -104,6 +104,7 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
     get() = gridPendente.filterBar as IFiltroPendente
   
   override fun marcaStatusCrediario(pedidoMesaCredito: PedidoMesaCredito?, status: StatusCrediario) {
+    //TODO Fazer teste de status válidos
     marcaUsuario(pedidoMesaCredito) {user, pedido ->
       viewModel.marcaStatusCrediario(pedido, status, user)
     }

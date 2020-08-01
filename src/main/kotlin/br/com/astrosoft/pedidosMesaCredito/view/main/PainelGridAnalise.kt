@@ -13,8 +13,10 @@ import com.vaadin.flow.data.provider.ListDataProvider
 
 class PainelGridAnalise(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit): PainelGrid<PedidoMesaCredito>(view, blockUpdate) {
   override fun Grid<PedidoMesaCredito>.gridConfig() {
-    addColumnButton(VaadinIcon.THUMBS_UP_O, view::marcaAprovado)
-    addColumnButton(VaadinIcon.THUMBS_DOWN_O, view::marcaReprovado)
+    addColumnButton(VaadinIcon.THUMBS_UP_O, "Aprova proposta",view::marcaAprovado)
+    addColumnButton(VaadinIcon.THUMBS_DOWN_O, "Reprova proposta", view::marcaReprovado)
+    addColumnButton(VaadinIcon.CLOCK, "Proposta pendente", view::marcaPendente)
+    
     colNumPedido()
     colDataHoraPedido()
     colCodigo()

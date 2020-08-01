@@ -73,6 +73,6 @@ FROM TPedido               AS P
 	       USING (storeno, pedido)
   INNER JOIN sqldados.eord AS O
 	       ON O.storeno = P.storeno AND O.ordno = P.pedido
-WHERE O.s15 IN (:status)
+WHERE O.s16 IN (:status)
 ORDER BY datePedido, timePedido
 

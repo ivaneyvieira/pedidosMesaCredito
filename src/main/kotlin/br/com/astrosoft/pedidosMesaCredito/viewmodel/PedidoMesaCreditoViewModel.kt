@@ -2,6 +2,7 @@ package br.com.astrosoft.pedidosMesaCredito.viewmodel
 
 import br.com.astrosoft.framework.viewmodel.IView
 import br.com.astrosoft.framework.viewmodel.ViewModel
+import br.com.astrosoft.framework.viewmodel.fail
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.ANALISE
@@ -21,7 +22,8 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView): ViewModel<IPedid
     return PedidoMesaCredito.listaAberto()
       .filter {
         it.filtroPedido(filtro.pedido()) &&
-        it.filtroCliente(filtro.cliente())
+        it.filtroCliente(filtro.cliente()) &&
+        it.filtroAnalista(filtro.analista())
       }
   }
   
@@ -34,7 +36,8 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView): ViewModel<IPedid
     return PedidoMesaCredito.listaAnalise()
       .filter {
         it.filtroPedido(filtro.pedido()) &&
-        it.filtroCliente(filtro.cliente())
+        it.filtroCliente(filtro.cliente()) &&
+        it.filtroAnalista(filtro.analista())
       }
   }
   
@@ -47,7 +50,8 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView): ViewModel<IPedid
     return PedidoMesaCredito.listaAprovado()
       .filter {
         it.filtroPedido(filtro.pedido()) &&
-        it.filtroCliente(filtro.cliente())
+        it.filtroCliente(filtro.cliente()) &&
+        it.filtroAnalista(filtro.analista())
       }
   }
   
@@ -60,7 +64,8 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView): ViewModel<IPedid
     return PedidoMesaCredito.listaReprovado()
       .filter {
         it.filtroPedido(filtro.pedido()) &&
-        it.filtroCliente(filtro.cliente())
+        it.filtroCliente(filtro.cliente()) &&
+        it.filtroAnalista(filtro.analista())
       }
   }
   
@@ -138,6 +143,7 @@ interface IPedidoMesaCreditoView: IView {
   
   //
   fun marcaStatusCrediario(pedidoMesaCredito: PedidoMesaCredito?, status: StatusCrediario)
+  
   fun marcaAberto(pedidoMesaCredito: PedidoMesaCredito?) {
     marcaStatusCrediario(pedidoMesaCredito, ABERTO)
   }
