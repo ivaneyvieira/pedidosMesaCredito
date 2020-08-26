@@ -8,7 +8,6 @@ SELECT no AS paymno,
 FROM sqldados.paym
 WHERE name LIKE '%CREDIA%';
 
-
 DO @HOJE := current_date * 1;
 DO @DATA := :date;
 
@@ -46,7 +45,8 @@ SELECT E.storeno,
        ROUND(AVG(if(seqno > 0, amt / 100, NULL)), 2) AS parcelas,
        SUM(if(seqno > 0, 1, 0))                      AS quant,
        SUM(if(seqno > 0, amt / 100, NULL))           AS totalFinanciado,
-       SUM(amt / 100)                                AS totalSimuldado
+       SUM(amt / 100)                                AS totalSimuldado,
+       SUM(chargeamt / 100)                          AS totalJuros
 FROM sqldados.eordcr AS E
   INNER JOIN TPedido AS P
 	       ON P.storeno = E.storeno AND P.pedido = E.ordno
@@ -63,11 +63,11 @@ SELECT P.storeno,
        valor,
        desconto,
        entrada,
-       ROUND((valor - entrada) / quant, 2) AS parcelas,
+       ROUND((valor - entrada + totalJuros) / quant, 2) AS parcelas,
        quant,
-       (valor - entrada)                   AS totalFinanciado,
-       O.s16                               AS statusCrediario,
-       O.s15                               AS userAnalise
+       (valor - entrada)                                AS totalFinanciado,
+       O.s16                                            AS statusCrediario,
+       O.s15                                            AS userAnalise
 FROM TPedido               AS P
   INNER JOIN TSIMULADOR    AS S
 	       USING (storeno, pedido)
