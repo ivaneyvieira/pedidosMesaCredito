@@ -6,7 +6,7 @@ SELECT no AS paymno,
        name,
        sname
 FROM sqldados.paym
-WHERE name LIKE '%CREDIA%';
+WHERE name LIKE '%CRED%';
 
 DO @HOJE := current_date * 1;
 DO @DATA := :date;
