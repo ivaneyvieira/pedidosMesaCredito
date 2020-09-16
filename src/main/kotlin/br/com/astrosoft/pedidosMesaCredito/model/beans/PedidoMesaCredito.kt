@@ -62,34 +62,37 @@ data class PedidoMesaCredito(val storeno: Int,
     get() = statusCrediarioEnum.descricao
   
   companion object {
-    private val userSaci: UserSaci by lazy {
-      AppConfig.userSaci as UserSaci
-    }
+    private val userSaci: UserSaci
+      get() =AppConfig.userSaci as UserSaci
     
     private fun listaPedidos(status: List<StatusCrediario>): List<PedidoMesaCredito> {
-      return saci.listaPedidoMesa(status.map {it.num})
+      return saci.listaPedidoMesa(status.map {it.num}).filtroLoja(userSaci.storeno)
     }
     
     fun listaAberto(): List<PedidoMesaCredito> {
-      return listaPedidos(listOf(ABERTO, ANALISE))
+      return listaPedidos(listOf(ABERTO, ANALISE)).filtroLoja(userSaci.storeno)
     }
     
     fun listaAnalise(): List<PedidoMesaCredito> {
-      return listaPedidos(listOf(ANALISE))
+      return listaPedidos(listOf(ANALISE)).filtroLoja(userSaci.storeno)
     }
     
     fun listaAprovado(): List<PedidoMesaCredito> {
-      return listaPedidos(listOf(APROVADO))
+      return listaPedidos(listOf(APROVADO)).filtroLoja(userSaci.storeno)
     }
     
     fun listaReprovado(): List<PedidoMesaCredito> {
-      return listaPedidos(listOf(REPROVADO))
+      return listaPedidos(listOf(REPROVADO)).filtroLoja(userSaci.storeno)
     }
     
     fun listaPendente(): List<PedidoMesaCredito> {
-      return listaPedidos(listOf(PENDENTE))
+      return listaPedidos(listOf(PENDENTE)).filtroLoja(userSaci.storeno)
     }
   }
+}
+
+private fun List<PedidoMesaCredito>.filtroLoja(storeno: Int): List<PedidoMesaCredito> {
+  return this.filter {it.storeno == storeno || storeno == 0}
 }
 
 enum class StatusCrediario(val num: Int, val descricao: String) {
