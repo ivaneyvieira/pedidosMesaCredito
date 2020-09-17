@@ -6,7 +6,7 @@ SELECT no AS paymno,
        name,
        sname
 FROM sqldados.paym
-WHERE name LIKE '%CRED%';
+WHERE no IN (900, 904, 905, 913, 953);
 
 DO @HOJE := current_date * 1;
 DO @DATA := :date;
@@ -33,7 +33,7 @@ FROM sqldados.eord             AS O
   INNER JOIN TMETODO_CREDIARIO AS M
 	       USING (paymno)
 WHERE (O.date >= @DATA AND O.status IN (:statusSaci))
-  AND O.storeno IN (1, 3, 5, 8, 9, 11, 12);
+  AND O.storeno IN (3, 8, 9, 12);
 
 DROP TABLE IF EXISTS TSIMULADOR;
 CREATE TEMPORARY TABLE TSIMULADOR (
