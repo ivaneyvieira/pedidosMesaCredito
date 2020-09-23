@@ -6,7 +6,7 @@ SELECT no AS paymno,
        name,
        sname
 FROM sqldados.paym
-WHERE no IN (900, 904, 905, 913, 953);
+WHERE no IN (900, 903, 904, 905, 913, 953);
 
 DO @HOJE := current_date * 1;
 DO @DATA := :date;
