@@ -69,7 +69,7 @@ class UsuarioView: ViewLayout<UsuarioViewModel>(), IUsuarioView {
   private fun gridCrud(): GridCrud<UserSaci> {
     val crud: GridCrud<UserSaci> = GridCrud(UserSaci::class.java)
     crud.grid
-      .setColumns(UserSaci::no.name, UserSaci::login.name, UserSaci::storeno.name, UserSaci::name.name)
+      .setColumns(UserSaci::no.name, UserSaci::login.name, UserSaci::funcionario.name ,UserSaci::storeno.name, UserSaci::name.name)
     crud.grid.getColumnBy(UserSaci::storeno)
       .setHeader("Loja")
     
@@ -149,11 +149,16 @@ class UserCrudFormFactory(private val viewModel: UsuarioViewModel): AbstractCrud
             isReadOnly = true
             binder.bind(this, UserSaci::name.name)
           }
-        if(operation in listOf(ADD, READ, DELETE, UPDATE))
+        if(operation in listOf(ADD, READ, DELETE, UPDATE)) {
+          textField("Funcionario"){
+            isReadOnly = false
+            binder.bind(this, UserSaci::funcionario.name)
+          }
           integerField("Loja") {
             isReadOnly = false
             binder.bind(this, UserSaci::storeno.name)
           }
+        }
       }
       hr()
       horizontalLayout {

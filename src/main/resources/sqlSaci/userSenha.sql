@@ -11,7 +11,8 @@ SELECT U.no,
 			  CHAR(ascii(SUBSTRING(pswd, 7, 1)) + ascii(' ') - ascii(')')),
 			  CHAR(ascii(SUBSTRING(pswd, 8, 1)) + ascii(' ') - ascii('-'))) AS CHAR),
 	      '') AS senha,
-       bits2      AS bitAcesso
+       bits2      AS bitAcesso,
+       auxStr     AS funcionario
 FROM sqldados.users        AS U
 WHERE login = :login
    OR :login = 'TODOS'

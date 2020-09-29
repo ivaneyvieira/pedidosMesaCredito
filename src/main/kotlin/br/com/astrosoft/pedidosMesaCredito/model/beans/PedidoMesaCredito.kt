@@ -35,9 +35,9 @@ data class PedidoMesaCredito(val storeno: Int,
   fun filtroPedido(pedidoNum: Int) = (pedidoNum == this.pedido) || (pedidoNum == 0)
   
   fun filtroCliente(cliente: String) = (this.nome.startsWith(cliente)) || (cliente == "")
-                                       || (this.custno.toString() == cliente)
+                                       || (this.custno.toString().startsWith(cliente))
   
-  fun filtroAnalista(analista: String) = (this.analistaName.startsWith(analista)) || (analista == "")
+  fun filtroAnalista(analista: String) =  (this.analistaName.contains(analista, ignoreCase = true)) || (analista == "")
   
   val dataHoraStatus
     get() = LocalDateTime.of(datePedido, timePedido)
@@ -49,7 +49,7 @@ data class PedidoMesaCredito(val storeno: Int,
     }
   val analistaName
     get() = saci.findAllUser()
-              .firstOrNull {it.no == userAnalise}?.login ?: ""
+              .firstOrNull {it.no == userAnalise}?.funcionario ?: ""
   val isUserValid
     get() = userSaci.admin || userSaci.no == userAnalise
   val statusCrediarioEnum

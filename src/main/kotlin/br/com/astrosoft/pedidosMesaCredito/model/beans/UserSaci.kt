@@ -9,9 +9,10 @@ class UserSaci: IUser {
   var name: String = ""
   override var login: String = ""
   override var senha: String = ""
+  var funcionario: String = ""
   override fun roles(): List<String> {
     val roles = if(admin) listOf("ADMIN") else listOf("USER")
-
+    
     return roles
   }
   
@@ -27,20 +28,19 @@ class UserSaci: IUser {
     }
   val admin
     get() = login == "ADM"
-
   
   companion object {
     private val BIT_ATIVO = 2.pow(0)
-  
+    
     fun findAllAtivos(): List<UserSaci> {
       return saci.findAllUser()
         .filter {it.ativo}
     }
-  
+    
     fun findAllUser(): List<UserSaci> {
       return saci.findAllUser()
     }
-  
+    
     fun updateUser(user: UserSaci) {
       saci.updateUser(user)
     }

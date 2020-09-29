@@ -28,6 +28,7 @@ class QuerySaci: QueryDB(driver, url, username, password) {
       addOptionalParameter("no", user.no)
       addOptionalParameter("bitAcesso", user.bitAcesso)
       addOptionalParameter("storeno", user.storeno)
+      addOptionalParameter("funcionario", user.funcionario)
     }
   }
   
