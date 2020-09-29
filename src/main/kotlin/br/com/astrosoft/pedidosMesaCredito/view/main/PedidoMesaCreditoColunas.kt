@@ -37,7 +37,7 @@ fun Grid<PedidoMesaCredito>.colNome() = addColumnString(PedidoMesaCredito::nome)
   isSortable = false
 }
 
-fun Grid<PedidoMesaCredito>.colAnalista() = addColumnString(PedidoMesaCredito::analistaName) {
+fun Grid<PedidoMesaCredito>.colAnalista() = addColumnInt(PedidoMesaCredito::userAnalise) {
   setHeader("Analista")
   isSortable = false
 }
