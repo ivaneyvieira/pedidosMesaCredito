@@ -33,7 +33,7 @@ FROM sqldados.eord             AS O
   INNER JOIN TMETODO_CREDIARIO AS M
 	       USING (paymno)
 WHERE (O.date >= @DATA AND O.status IN (:statusSaci))
-  AND O.storeno IN (3, 8, 9, 12);
+  AND O.storeno IN (3, 5, 8, 9, 12);
 
 DROP TABLE IF EXISTS TSIMULADOR;
 CREATE TEMPORARY TABLE TSIMULADOR (
