@@ -5,10 +5,14 @@ import br.com.astrosoft.framework.view.addColumnButton
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroPendente
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IPedidoMesaCreditoView
+import com.github.mvysny.karibudsl.v10.VaadinDsl
+import com.github.mvysny.karibudsl.v10.grid
+import com.vaadin.flow.component.HasComponents
 import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.icon.VaadinIcon
 import com.vaadin.flow.component.textfield.IntegerField
 import com.vaadin.flow.component.textfield.TextField
+import com.vaadin.flow.data.provider.DataProvider
 import com.vaadin.flow.data.provider.ListDataProvider
 
 class PainelGridPendente(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit): PainelGrid<PedidoMesaCredito>(view, blockUpdate) {
@@ -52,5 +56,10 @@ class PainelGridPendente(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
     override fun pedido(): Int = edtPedido.value ?: 0
     override fun cliente(): String = edtCliente.value ?: ""
     override fun analista(): String = edtAnalista.value ?: ""
+  }
+  
+  override fun (@VaadinDsl HasComponents).gridPanel(dataProvider: DataProvider<PedidoMesaCredito, *>,
+                                                    block: (Grid<PedidoMesaCredito>).() -> Unit): Grid<PedidoMesaCredito> {
+    return grid(dataProvider, block)
   }
 }

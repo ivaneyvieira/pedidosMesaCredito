@@ -27,7 +27,8 @@ data class PedidoMesaCredito(val storeno: Int,
                              val quant: Int,
                              val totalFinanciado: Double,
                              val statusCrediario: Int,
-                             val userAnalise: Int) {
+                             val userAnalise: Int,
+                             val analistaName: String) {
   fun marcaStatusCrediario(status: StatusCrediario, userSaci: UserSaci) {
     saci.marcaStatusCrediario(storeno, pedido, userSaci.no, status.num)
   }
@@ -35,9 +36,10 @@ data class PedidoMesaCredito(val storeno: Int,
   fun filtroPedido(pedidoNum: Int) = (pedidoNum == this.pedido) || (pedidoNum == 0)
   
   fun filtroCliente(cliente: String) = (this.nome.startsWith(cliente)) || (cliente == "")
-                                       || (this.custno.toString().startsWith(cliente))
+                                       || (this.custno.toString()
+    .startsWith(cliente))
   
-  fun filtroAnalista(analista: String) =  (this.analistaName.contains(analista, ignoreCase = true)) || (analista == "")
+  fun filtroAnalista(analista: String) = (this.analistaName.contains(analista, ignoreCase = true)) || (analista == "")
   
   val dataHoraStatus
     get() = LocalDateTime.of(datePedido, timePedido)
@@ -47,9 +49,6 @@ data class PedidoMesaCredito(val storeno: Int,
       val parcelaFormat = formatNumber.format(parcelas)
       return "$quant x $parcelaFormat"
     }
-  val analistaName
-    get() = saci.findAllUser()
-              .firstOrNull {it.no == userAnalise}?.funcionario ?: ""
   val isUserValid
     get() = userSaci.admin || userSaci.no == userAnalise
   val statusCrediarioEnum
@@ -63,10 +62,11 @@ data class PedidoMesaCredito(val storeno: Int,
   
   companion object {
     private val userSaci: UserSaci
-      get() =AppConfig.userSaci as UserSaci
+      get() = AppConfig.userSaci as UserSaci
     
     private fun listaPedidos(status: List<StatusCrediario>): List<PedidoMesaCredito> {
-      return saci.listaPedidoMesa(status.map {it.num}).filtroLoja(userSaci.storeno)
+      return saci.listaPedidoMesa(status.map {it.num})
+        .filtroLoja(userSaci.storeno)
     }
     
     fun listaAberto(): List<PedidoMesaCredito> {
