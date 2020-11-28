@@ -27,7 +27,7 @@ SELECT O.storeno,
        discount / 100          AS desconto,
        O.s16                   AS statusCrediario,
        O.s15                   AS userAnalise,
-       IFNULL(U.name, '')      AS analistaName
+       IFNULL(U.auxStr, '')     AS analistaName
 FROM sqldados.eord             AS O
   LEFT JOIN  sqldados.custp    AS C
 	       ON C.no = O.custno
