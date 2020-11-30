@@ -5,16 +5,16 @@ import br.com.astrosoft.framework.view.ViewLayout
 import br.com.astrosoft.framework.view.tabGrid
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario
+import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.ABERTO
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.ANALISE
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.APROVADO
-import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.ABERTO
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.PENDENTE
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.REPROVADO
 import br.com.astrosoft.pedidosMesaCredito.model.beans.UserSaci
 import br.com.astrosoft.pedidosMesaCredito.view.layout.PedidoMesaCreditoLayout
+import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroAberto
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroAnalise
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroAprovado
-import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroAberto
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroPendente
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IFiltroReprovado
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.IPedidoMesaCreditoView
@@ -39,8 +39,8 @@ import com.vaadin.flow.router.Route
 @PageTitle(AppConfig.title)
 @HtmlImport("frontend://styles/shared-styles.html")
 class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMesaCreditoView {
-  lateinit var thread : FeederThread
-  
+  var userSaci : UserSaci? = null
+  lateinit var thread: FeederThread
   private var tabMain: TabSheet
   private val gridAberto = PainelGridAberto(this) {viewModel.updateGridAberto()}
   private val gridAnalise = PainelGridAnalise(this) {viewModel.updateGridAnalise()}
@@ -51,9 +51,17 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
   
   override fun isAccept() = true
   
+  override fun userSaci(): UserSaci? {
+    if (userSaci == null){
+      val user = AppConfig.userSaci
+      userSaci = user as UserSaci?
+    }
+    return userSaci
+  }
+  
   override fun onAttach(attachEvent: AttachEvent) {
     thread = FeederThread(attachEvent.ui, viewModel)
-    //thread.start()
+    thread.start()
   }
   
   override fun onDetach(detachEvent: DetachEvent?) {
@@ -112,8 +120,8 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
   
   override fun selectTab(status: StatusCrediario) {
     when(status) {
-      ABERTO  -> tabMain.selectedIndex = 0
-      ANALISE  -> tabMain.selectedIndex = 1
+      ABERTO -> tabMain.selectedIndex = 0
+      ANALISE -> tabMain.selectedIndex = 1
       PENDENTE -> tabMain.selectedIndex = 2
       APROVADO -> tabMain.selectedIndex = 3
       REPROVADO -> tabMain.selectedIndex = 4
@@ -137,8 +145,8 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
     }
   }
   
-  private fun desmarcaUsuario(pedidoMesaCredito: br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito?,
-                              action: (br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito) -> Unit) {
+  private fun desmarcaUsuario(pedidoMesaCredito: PedidoMesaCredito?,
+                              action: (PedidoMesaCredito) -> Unit) {
     if(pedidoMesaCredito == null)
       showError("Pedido não selecionado")
     else
@@ -153,15 +161,17 @@ class PedidoMesaCreditoView: ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMe
     const val TAB_PENDENTE: String = "Pendente"
   }
   
-  class FeederThread(private val ui: UI, val viewModel: PedidoMesaCreditoViewModel): Thread() {
+  inner class FeederThread(private val ui: UI, val viewModel: PedidoMesaCreditoViewModel):
+    Thread() {
     override fun run() {
       try {
         while(true) {
-          sleep(30000)
-
-          ui.access {viewModel.updateGridAberto()}
+          sleep(10000)
+          
+          ui.access {
+            viewModel.updateGridAberto()
+          }
         }
-
       } catch(e: InterruptedException) {
         e.printStackTrace()
       }

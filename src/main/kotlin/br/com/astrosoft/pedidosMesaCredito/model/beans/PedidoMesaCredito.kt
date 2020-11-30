@@ -1,6 +1,5 @@
 package br.com.astrosoft.pedidosMesaCredito.model.beans
 
-import br.com.astrosoft.AppConfig
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.ABERTO
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.ANALISE
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.APROVADO
@@ -33,6 +32,8 @@ data class PedidoMesaCredito(val storeno: Int,
     saci.marcaStatusCrediario(storeno, pedido, userSaci.no, status.num)
   }
   
+  fun findPedidoStatus() = saci.findPedidoStatus(storeno, pedido)
+  
   fun filtroPedido(pedidoNum: Int) = (pedidoNum == this.pedido) || (pedidoNum == 0)
   
   fun filtroCliente(cliente: String) = (this.nome.startsWith(cliente)) || (cliente == "")
@@ -49,8 +50,6 @@ data class PedidoMesaCredito(val storeno: Int,
       val parcelaFormat = formatNumber.format(parcelas)
       return "$quant x $parcelaFormat"
     }
-  val isUserValid
-    get() = userSaci.admin || userSaci.no == userAnalise
   val statusCrediarioEnum
     get() = StatusCrediario.valueByNum(statusCrediario)
   val statusPedidoEnum
@@ -61,37 +60,35 @@ data class PedidoMesaCredito(val storeno: Int,
     get() = statusCrediarioEnum.descricao
   
   companion object {
-    private val userSaci: UserSaci
-      get() = AppConfig.userSaci as UserSaci
+
     
-    private fun listaPedidos(status: List<StatusCrediario>): List<PedidoMesaCredito> {
-      return saci.listaPedidoMesa(status.map {it.num})
-        .filtroLoja(userSaci.storeno)
+    private fun listaPedidos(userSaci : UserSaci?, status: List<StatusCrediario>): List<PedidoMesaCredito> {
+      return saci.listaPedidoMesa(status.map {it.num}).filtroLoja(userSaci?.storeno)
     }
     
-    fun listaAberto(): List<PedidoMesaCredito> {
-      return listaPedidos(listOf(ABERTO, ANALISE)).filtroLoja(userSaci.storeno)
+    fun listaAberto(userSaci : UserSaci?): List<PedidoMesaCredito> {
+      return listaPedidos(userSaci, listOf(ABERTO, ANALISE))
     }
     
-    fun listaAnalise(): List<PedidoMesaCredito> {
-      return listaPedidos(listOf(ANALISE)).filtroLoja(userSaci.storeno)
+    fun listaAnalise(userSaci : UserSaci?): List<PedidoMesaCredito> {
+      return listaPedidos(userSaci, listOf(ANALISE))
     }
     
-    fun listaAprovado(): List<PedidoMesaCredito> {
-      return listaPedidos(listOf(APROVADO)).filtroLoja(userSaci.storeno)
+    fun listaAprovado(userSaci : UserSaci?): List<PedidoMesaCredito> {
+      return listaPedidos(userSaci, listOf(APROVADO))
     }
     
-    fun listaReprovado(): List<PedidoMesaCredito> {
-      return listaPedidos(listOf(REPROVADO)).filtroLoja(userSaci.storeno)
+    fun listaReprovado(userSaci : UserSaci?): List<PedidoMesaCredito> {
+      return listaPedidos(userSaci, listOf(REPROVADO))
     }
     
-    fun listaPendente(): List<PedidoMesaCredito> {
-      return listaPedidos(listOf(PENDENTE)).filtroLoja(userSaci.storeno)
+    fun listaPendente(userSaci : UserSaci?): List<PedidoMesaCredito> {
+      return listaPedidos(userSaci, listOf(PENDENTE))
     }
   }
 }
 
-private fun List<PedidoMesaCredito>.filtroLoja(storeno: Int): List<PedidoMesaCredito> {
+private fun List<PedidoMesaCredito>.filtroLoja(storeno: Int?): List<PedidoMesaCredito> {
   return this.filter {it.storeno == storeno || storeno == 0}
 }
 

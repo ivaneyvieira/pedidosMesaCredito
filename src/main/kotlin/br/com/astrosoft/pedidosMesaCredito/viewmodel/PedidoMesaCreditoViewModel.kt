@@ -5,9 +5,9 @@ import br.com.astrosoft.framework.viewmodel.ViewModel
 import br.com.astrosoft.framework.viewmodel.fail
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario
+import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.ABERTO
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.ANALISE
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.APROVADO
-import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.ABERTO
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.PENDENTE
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.REPROVADO
 import br.com.astrosoft.pedidosMesaCredito.model.beans.UserSaci
@@ -19,7 +19,7 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView): ViewModel<IPedid
   
   private fun listAberto(): List<PedidoMesaCredito> {
     val filtro = view.filtroAberto
-    return PedidoMesaCredito.listaAberto()
+    return PedidoMesaCredito.listaAberto(view.userSaci())
       .filter {
         it.filtroPedido(filtro.pedido()) &&
         it.filtroCliente(filtro.cliente()) &&
@@ -33,7 +33,7 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView): ViewModel<IPedid
   
   private fun listAnalise(): List<PedidoMesaCredito> {
     val filtro = view.filtroAnalise
-    return PedidoMesaCredito.listaAnalise()
+    return PedidoMesaCredito.listaAnalise(view.userSaci())
       .filter {
         it.filtroPedido(filtro.pedido()) &&
         it.filtroCliente(filtro.cliente()) &&
@@ -47,7 +47,7 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView): ViewModel<IPedid
   
   private fun listAprovado(): List<PedidoMesaCredito> {
     val filtro = view.filtroAprovado
-    return PedidoMesaCredito.listaAprovado()
+    return PedidoMesaCredito.listaAprovado(view.userSaci())
       .filter {
         it.filtroPedido(filtro.pedido()) &&
         it.filtroCliente(filtro.cliente()) &&
@@ -61,14 +61,13 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView): ViewModel<IPedid
   
   private fun listReprovado(): List<PedidoMesaCredito> {
     val filtro = view.filtroReprovado
-    return PedidoMesaCredito.listaReprovado()
+    return PedidoMesaCredito.listaReprovado(view.userSaci())
       .filter {
         it.filtroPedido(filtro.pedido()) &&
         it.filtroCliente(filtro.cliente()) &&
         it.filtroAnalista(filtro.analista())
       }
   }
-  
   
   fun updateGridPendente() {
     view.updateGridPendente(listPendente())
@@ -76,7 +75,7 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView): ViewModel<IPedid
   
   private fun listPendente(): List<PedidoMesaCredito> {
     val filtro = view.filtroPendente
-    return PedidoMesaCredito.listaPendente()
+    return PedidoMesaCredito.listaPendente(view.userSaci())
       .filter {
         it.filtroPedido(filtro.pedido()) &&
         it.filtroCliente(filtro.cliente()) &&
@@ -84,15 +83,17 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView): ViewModel<IPedid
       }
   }
   
-  //
   fun marcaStatusCrediario(pedido: PedidoMesaCredito, status: StatusCrediario, userSaci: UserSaci) = exec {
-    pedido.marcaStatusCrediario(status, userSaci)
+    val statusPedido = pedido.findPedidoStatus() ?: fail("Pedido não encontrado")
+    if(statusPedido.userAnalise == 0 || statusPedido.userAnalise == userSaci.no)
+      pedido.marcaStatusCrediario(status, userSaci)
+    else fail("Esse pedido pertente a analista ${statusPedido.analistaName}")
     when(status) {
-      ABERTO  -> updateGridAberto()
+      ABERTO -> updateGridAberto()
       ANALISE -> updateGridAnalise()
-      APROVADO  -> updateGridAprovado()
+      APROVADO -> updateGridAprovado()
       REPROVADO -> updateGridReprovado()
-      PENDENTE  -> updateGridPendente()
+      PENDENTE -> updateGridPendente()
     }
     view.selectTab(status)
   }
@@ -165,6 +166,7 @@ interface IPedidoMesaCreditoView: IView {
   }
   
   fun selectTab(status: StatusCrediario)
+  fun userSaci(): UserSaci?
 }
 
 data class SenhaUsuario(var nome: String, var senha: String?)
