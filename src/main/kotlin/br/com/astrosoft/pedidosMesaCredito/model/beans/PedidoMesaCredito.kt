@@ -107,7 +107,7 @@ enum class StatusCrediario(val num: Int, val descricao: String) {
 
 enum class StatusSaci(val numero: Int, val descricao: String, val analise: Boolean) {
   INCLUIDO(0, "Incluído", false),
-  ORCADO(1, "Orçado", false),
+  ORCADO(1, "Orçado", true),
   RESERVADO(2, "Reservado", true),
   VENDIDO(3, "Vendido", false),
   EXPIRADO(4, "Expirado", false),
