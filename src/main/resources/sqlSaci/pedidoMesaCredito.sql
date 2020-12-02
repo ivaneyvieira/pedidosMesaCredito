@@ -39,7 +39,7 @@ FROM sqldados.eord             AS O
 	       ON U.no = O.s15
 WHERE O.date > @DATA
   AND O.status IN (:statusSaci)
-  AND O.storeno IN (1, 3, 5, 8, 9, 12)
+  AND O.storeno IN (1, 3, 5, 8, 9, 11, 12)
   AND O.s16 IN (:status)
   AND C.no IS NOT NULL
   AND M.paymno IS NOT NULL;
