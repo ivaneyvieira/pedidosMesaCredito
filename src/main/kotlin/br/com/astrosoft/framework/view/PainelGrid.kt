@@ -34,6 +34,10 @@ abstract class PainelGrid<T: Any>(val view: IPedidoMesaCreditoView, val blockUpd
     }
   }
   
+  fun refreshGrid() {
+    dataProvider.refreshAll()
+  }
+  
   fun selectionItem(): T? = grid.asSingleSelect().value
   
   protected abstract fun filterBar(): FilterBar

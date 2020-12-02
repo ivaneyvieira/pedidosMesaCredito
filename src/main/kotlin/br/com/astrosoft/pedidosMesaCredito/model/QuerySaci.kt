@@ -2,11 +2,10 @@ package br.com.astrosoft.pedidosMesaCredito.model
 
 import br.com.astrosoft.framework.model.QueryDB
 import br.com.astrosoft.framework.util.DB
-import br.com.astrosoft.framework.util.toSaciDate
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
+import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoStatus
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusSaci
 import br.com.astrosoft.pedidosMesaCredito.model.beans.UserSaci
-import java.time.LocalDate
 
 class QuerySaci: QueryDB(driver, url, username, password) {
   fun findUser(login: String?): List<UserSaci> {
@@ -34,19 +33,31 @@ class QuerySaci: QueryDB(driver, url, username, password) {
     }
   }
   
-  fun listaPedidoMesa(status : List<Int>): List<PedidoMesaCredito> {
+  fun listaPedidoMesa(status: List<Int>): List<PedidoMesaCredito> {
     val sql = "/sqlSaci/pedidoMesaCredito.sql"
     //val data = LocalDate.now().minusDays(7).toSaciDate()
-    val statusSaci = StatusSaci.values().filter{it.analise}.map {it.numero}
+    val statusSaci =
+      StatusSaci.values()
+        .filter {it.analise}
+        .map {it.numero}
     return query(sql, PedidoMesaCredito::class) {
       addOptionalParameter("status", status)
       addOptionalParameter("statusSaci", statusSaci)
     }
   }
   
-  fun marcaStatusCrediario(storeno : Int, pedido : Int, userno: Int, status: Int) {
+  fun findPedidoStatus(loja: Int, numPedio: Int): PedidoStatus? {
+    val sql = "/sqlSaci/pedidoStatus.sql"
+    
+    return query(sql, PedidoStatus::class) {
+      addOptionalParameter("storeno", loja)
+      addOptionalParameter("ordno", numPedio)
+    }.firstOrNull()
+  }
+  
+  fun marcaStatusCrediario(storeno: Int, pedido: Int, userno: Int, status: Int) {
     val sql = "/sqlSaci/marcaStatusCrediario.sql"
-
+    
     return script(sql) {
       addOptionalParameter("storeno", storeno)
       addOptionalParameter("pedido", pedido)
