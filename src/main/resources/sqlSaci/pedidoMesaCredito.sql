@@ -9,7 +9,7 @@ FROM sqldados.paym
 WHERE no IN (900, 903, 904, 905, 913, 953);
 
 DO @HOJE := current_date * 1;
-DO @DATA := 20201101;
+DO @DATA := @HOJE;
 
 DROP TABLE IF EXISTS TPedido;
 CREATE TEMPORARY TABLE TPedido (
@@ -37,7 +37,7 @@ FROM sqldados.eord             AS O
 	       USING (paymno)
   LEFT JOIN  sqldados.users    AS U
 	       ON U.no = O.s15
-WHERE O.date > @DATA
+WHERE O.date = @DATA
   AND O.status IN (:statusSaci)
   AND O.storeno IN (1, 3, 5, 8, 9, 11, 12)
   AND O.s16 IN (:status)
