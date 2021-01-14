@@ -4,6 +4,7 @@ import br.com.astrosoft.framework.view.addColumnDouble
 import br.com.astrosoft.framework.view.addColumnInt
 import br.com.astrosoft.framework.view.addColumnLocalDateTime
 import br.com.astrosoft.framework.view.addColumnString
+import br.com.astrosoft.pedidosMesaCredito.model.beans.Contrato
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
 import com.github.mvysny.karibudsl.v10.VaadinDsl
 import com.github.mvysny.karibudsl.v10.integerField
@@ -69,6 +70,37 @@ fun Grid<PedidoMesaCredito>.colEntrada() = addColumnDouble(PedidoMesaCredito::en
 
 fun Grid<PedidoMesaCredito>.colParcelasDesc() = addColumnString(PedidoMesaCredito::parcelaDesc) {
   setHeader("Parcela")
+  isSortable = false
+}
+
+//Colunas Contrato
+fun Grid<Contrato>.contratoNumero() = addColumnString(Contrato::numeroContrato) {
+  setHeader("Contrato")
+  isSortable = false
+}
+
+fun Grid<Contrato>.contratoCodigo() = addColumnString(Contrato::codigoCliente) {
+  setHeader("Código")
+  isSortable = false
+}
+
+fun Grid<Contrato>.contratoCliente() = addColumnString(Contrato::nomeCliente) {
+  setHeader("Cliente")
+  isSortable = false
+}
+
+fun Grid<Contrato>.contratoData() = addColumnString(Contrato::dataContrato) {
+  setHeader("Data")
+  isSortable = false
+}
+
+fun Grid<Contrato>.contratoTotal() = addColumnString(Contrato::totalAvista) {
+  setHeader("Total")
+  isSortable = false
+}
+
+fun Grid<Contrato>.contratoAnalista() = addColumnString(Contrato::analistaNome) {
+  setHeader("Analista")
   isSortable = false
 }
 

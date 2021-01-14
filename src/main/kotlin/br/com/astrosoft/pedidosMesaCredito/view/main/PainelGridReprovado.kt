@@ -53,7 +53,7 @@ class PainelGridReprovado(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit)
     override fun pedido(): Int = edtPedido.value ?: 0
     
     override fun cliente(): String = edtCliente.value ?: ""
-  
+    
     override fun analista(): String = edtAnalista.value ?: ""
   }
   

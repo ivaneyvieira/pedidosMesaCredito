@@ -33,8 +33,7 @@ class UserSaci: IUser {
     private val BIT_ATIVO = 2.pow(0)
     
     fun findAllAtivos(): List<UserSaci> {
-      return saci.findAllUser()
-        .filter {it.ativo}
+      return saci.findAllUser().filter {it.ativo}
     }
     
     fun findAllUser(): List<UserSaci> {
@@ -46,12 +45,9 @@ class UserSaci: IUser {
     }
     
     fun findUser(login: String?): UserSaci? {
-      return saci.findUser(login)
-        .firstOrNull()
+      return saci.findUser(login).firstOrNull()
     }
   }
 }
 
-fun Int.pow(e: Int): Int = this.toDouble()
-  .pow(e)
-  .toInt()
+fun Int.pow(e: Int): Int = this.toDouble().pow(e).toInt()

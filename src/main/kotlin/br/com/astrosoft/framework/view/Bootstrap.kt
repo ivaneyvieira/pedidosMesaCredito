@@ -14,9 +14,9 @@ class Bootstrap: ServletContextListener {
     log?.info("Destroying VaadinOnKotlin")
     log?.info("Shutdown complete")
   }
-
+  
   override fun contextInitialized(sce: ServletContextEvent?) {
-    Locale.setDefault( Locale ("pt", "BR"))
+    Locale.setDefault(Locale("pt", "BR"))
     log?.info("Starting up")
     val home = System.getenv("HOME")
     val fileName = System.getenv("EBEAN_PROPS") ?: "$home/ebean.pintos.properties"

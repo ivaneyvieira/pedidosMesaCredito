@@ -11,23 +11,11 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-data class PedidoMesaCredito(val storeno: Int,
-                             val pedido: Int,
-                             val status: Int,
-                             val datePedido: LocalDate,
-                             val timePedido: LocalTime,
-                             val custno: Int,
-                             val nome: String,
-                             val filial: String,
-                             val valor: Double,
-                             val desconto: Double,
-                             val entrada: Double,
-                             val parcelas: Double,
-                             val quant: Int,
-                             val totalFinanciado: Double,
-                             val statusCrediario: Int,
-                             val userAnalise: Int,
-                             val analistaName: String) {
+data class PedidoMesaCredito(val storeno: Int, val pedido: Int, val status: Int, val datePedido: LocalDate,
+                             val timePedido: LocalTime, val custno: Int, val nome: String, val filial: String,
+                             val valor: Double, val desconto: Double, val entrada: Double, val parcelas: Double,
+                             val quant: Int, val totalFinanciado: Double, val statusCrediario: Int,
+                             val userAnalise: Int, val analistaName: String) {
   fun marcaStatusCrediario(status: StatusCrediario, userSaci: UserSaci) {
     saci.marcaStatusCrediario(storeno, pedido, userSaci.no, status.num)
   }
@@ -36,9 +24,8 @@ data class PedidoMesaCredito(val storeno: Int,
   
   fun filtroPedido(pedidoNum: Int) = (pedidoNum == this.pedido) || (pedidoNum == 0)
   
-  fun filtroCliente(cliente: String) = (this.nome.startsWith(cliente)) || (cliente == "")
-                                       || (this.custno.toString()
-    .startsWith(cliente))
+  fun filtroCliente(cliente: String) =
+    (this.nome.startsWith(cliente)) || (cliente == "") || (this.custno.toString().startsWith(cliente))
   
   fun filtroAnalista(analista: String) = (this.analistaName.contains(analista, ignoreCase = true)) || (analista == "")
   
@@ -60,29 +47,27 @@ data class PedidoMesaCredito(val storeno: Int,
     get() = statusCrediarioEnum.descricao
   
   companion object {
-
-    
-    private fun listaPedidos(userSaci : UserSaci?, status: List<StatusCrediario>): List<PedidoMesaCredito> {
+    private fun listaPedidos(userSaci: UserSaci?, status: List<StatusCrediario>): List<PedidoMesaCredito> {
       return saci.listaPedidoMesa(status.map {it.num}).filtroLoja(userSaci?.storeno)
     }
     
-    fun listaAberto(userSaci : UserSaci?): List<PedidoMesaCredito> {
+    fun listaAberto(userSaci: UserSaci?): List<PedidoMesaCredito> {
       return listaPedidos(userSaci, listOf(ABERTO, ANALISE))
     }
     
-    fun listaAnalise(userSaci : UserSaci?): List<PedidoMesaCredito> {
+    fun listaAnalise(userSaci: UserSaci?): List<PedidoMesaCredito> {
       return listaPedidos(userSaci, listOf(ANALISE))
     }
     
-    fun listaAprovado(userSaci : UserSaci?): List<PedidoMesaCredito> {
+    fun listaAprovado(userSaci: UserSaci?): List<PedidoMesaCredito> {
       return listaPedidos(userSaci, listOf(APROVADO))
     }
     
-    fun listaReprovado(userSaci : UserSaci?): List<PedidoMesaCredito> {
+    fun listaReprovado(userSaci: UserSaci?): List<PedidoMesaCredito> {
       return listaPedidos(userSaci, listOf(REPROVADO))
     }
     
-    fun listaPendente(userSaci : UserSaci?): List<PedidoMesaCredito> {
+    fun listaPendente(userSaci: UserSaci?): List<PedidoMesaCredito> {
       return listaPedidos(userSaci, listOf(PENDENTE))
     }
   }
@@ -97,11 +82,11 @@ enum class StatusCrediario(val num: Int, val descricao: String) {
   ANALISE(1, "Em análise"),
   APROVADO(2, "Aprovado"),
   REPROVADO(3, "Reprovado"),
-  PENDENTE(4, "Pendencia");
+  PENDENTE(4, "Pendencia"),
+  CONTRATO(5, "Contrato");
   
   companion object {
-    fun valueByNum(num: Int) = values()
-                                 .firstOrNull {it.num == num} ?: ABERTO
+    fun valueByNum(num: Int) = values().firstOrNull {it.num == num} ?: ABERTO
   }
 }
 
@@ -119,7 +104,6 @@ enum class StatusSaci(val numero: Int, val descricao: String, val analise: Boole
   override fun toString() = descricao
   
   companion object {
-    fun valueByNum(num: Int) = values()
-                                 .firstOrNull {it.numero == num} ?: INCLUIDO
+    fun valueByNum(num: Int) = values().firstOrNull {it.numero == num} ?: INCLUIDO
   }
 }

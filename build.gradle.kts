@@ -73,6 +73,12 @@ dependencies {
   implementation("org.vaadin.olli:clipboardhelper:1.1.2")
   implementation("com.flowingcode.addons:font-awesome-iron-iconset:2.1.1")
   implementation("com.github.nwillc:poink:0.4.6")
+  //implementation("net.sourceforge.dynamicreports:dynamicreports-core:6.11.1")
+  implementation("net.sf.jasperreports:jasperreports:6.16.0")
+  implementation("com.lowagie:itext:2.1.7")
+
+  // https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports-fonts
+  implementation("net.sf.jasperreports:jasperreports-fonts:6.12.2")
   //  compile("org.webjars.bowergithub.vaadin:vaadin-combo-box:4.2.7")
   //compile("com.github.appreciated:app-layout-addon:4.0.0.rc4")
   implementation("org.vaadin.crudui:crudui:4.1.0")
@@ -89,7 +95,7 @@ vaadin {
   if (gradle.startParameter.taskNames.contains("stage")) {
     productionMode = true
   }
-  pnpmEnable = true
+  pnpmEnable = false
 }
 
 

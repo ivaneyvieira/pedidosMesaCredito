@@ -1,10 +1,9 @@
 package br.com.astrosoft.pedidosMesaCredito.viewmodel
 
-import br.com.astrosoft.pedidosMesaCredito.model.beans.UserSaci
 import br.com.astrosoft.framework.viewmodel.IView
 import br.com.astrosoft.framework.viewmodel.ViewModel
 import br.com.astrosoft.framework.viewmodel.fail
-import br.com.astrosoft.pedidosMesaCredito.model.saci
+import br.com.astrosoft.pedidosMesaCredito.model.beans.UserSaci
 
 class UsuarioViewModel(view: IUsuarioView): ViewModel<IUsuarioView>(view) {
   fun findAll(): List<UserSaci>? {
@@ -38,12 +37,9 @@ class UsuarioViewModel(view: IUsuarioView): ViewModel<IUsuarioView>(view) {
       userValid.ativo = false
       UserSaci.updateUser(userValid)
     }
-  }
-  
- // fun findLogins() : List<String>{
- //   return UserSaci.findAllUser().map{it.login}.distinct().sorted()
- // }
-  
+  } // fun findLogins() : List<String>{
+  //   return UserSaci.findAllUser().map{it.login}.distinct().sorted()
+  // }
   fun findAllUser(): List<UserSaci> {
     return UserSaci.findAllUser()
   }

@@ -1,8 +1,8 @@
 package br.com.astrosoft.framework.spring
 
 interface IUser {
-  val login : String
-  val senha : String
+  val login: String
+  val senha: String
   
-  fun roles() : List<String>
+  fun roles(): List<String>
 }
