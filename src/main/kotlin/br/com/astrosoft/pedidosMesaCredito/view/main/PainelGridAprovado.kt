@@ -13,8 +13,8 @@ import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.provider.DataProvider
 import com.vaadin.flow.data.provider.ListDataProvider
 
-class PainelGridAprovado(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit): PainelGrid<PedidoMesaCredito>(view,
-                                                                                                               blockUpdate) {
+class PainelGridAprovado(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
+  PainelGrid<PedidoMesaCredito>(view, blockUpdate) {
   override fun Grid<PedidoMesaCredito>.gridConfig() {
     colNumPedido()
     colDataHoraPedido()

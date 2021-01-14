@@ -2,6 +2,7 @@ package br.com.astrosoft.pedidosMesaCredito.model
 
 import br.com.astrosoft.framework.model.QueryDB
 import br.com.astrosoft.framework.util.DB
+import br.com.astrosoft.pedidosMesaCredito.model.beans.Contrato
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoStatus
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusSaci
@@ -34,12 +35,8 @@ class QuerySaci: QueryDB(driver, url, username, password) {
   }
   
   fun listaPedidoMesa(status: List<Int>): List<PedidoMesaCredito> {
-    val sql = "/sqlSaci/pedidoMesaCredito.sql"
-    //val data = LocalDate.now().minusDays(7).toSaciDate()
-    val statusSaci =
-      StatusSaci.values()
-        .filter {it.analise}
-        .map {it.numero}
+    val sql = "/sqlSaci/pedidoMesaCredito.sql" //val data = LocalDate.now().minusDays(7).toSaciDate()
+    val statusSaci = StatusSaci.values().filter {it.analise}.map {it.numero}
     return query(sql, PedidoMesaCredito::class) {
       addOptionalParameter("status", status)
       addOptionalParameter("statusSaci", statusSaci)
@@ -66,6 +63,12 @@ class QuerySaci: QueryDB(driver, url, username, password) {
     }
   }
   
+  fun findContratos(): List<Contrato> {
+    val sql = "/sqlSaci/contratosHoje.sql"
+    
+    return query(sql, Contrato::class)
+  }
+  
   companion object {
     private val db = DB("saci")
     internal val driver = db.driver
@@ -73,9 +76,7 @@ class QuerySaci: QueryDB(driver, url, username, password) {
     internal val username = db.username
     internal val password = db.password
     internal val test = db.test
-    val ipServer =
-      url.split("/")
-        .getOrNull(2)
+    val ipServer = url.split("/").getOrNull(2)
   }
 }
 
