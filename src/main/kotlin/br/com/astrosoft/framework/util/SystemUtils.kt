@@ -85,6 +85,13 @@ object SystemUtils {
     return readFile(file, Charset.defaultCharset())
   }
   
+  fun readStream(file: String ): InputStream{
+    val resource = SystemUtils::class.java.getResource(file)
+    val path = Paths.get(resource.toURI())
+    val encoded = Files.readAllBytes(path)
+    return ByteArrayInputStream(encoded)
+  }
+  
   @Throws(IOException::class)
   fun readFile(filename: String, encoding: Charset): String {
     val resource = SystemUtils::class.java.getResource(filename)
