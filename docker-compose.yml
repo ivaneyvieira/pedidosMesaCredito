@@ -2,6 +2,10 @@ version: "3"
 services:
   pintos_mesa_h:
     image: tomcat:8
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
     container_name: pin_mesa_h
     ports:
       - "8012:8080"
