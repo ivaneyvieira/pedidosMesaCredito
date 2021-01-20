@@ -5,6 +5,7 @@ val vaadin10_version = "14.4.3"
 val kotlin_version = "1.4.20"
 val spring_boot_version = "2.3.1.RELEASE"
 
+
 plugins {
   id("org.springframework.boot") version "2.3.1.RELEASE"
   id("io.spring.dependency-management") version "1.0.9.RELEASE"
@@ -46,6 +47,7 @@ dependencies {
   providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
   // Vaadin-on-Kotlin dependency, includes Vaadin
   implementation("com.github.mvysny.karibudsl:karibu-dsl:$vaadinonkotlin_version")
+  //implementation("eu.vaadinonkotlin:vok-framework-v10-vokdb:$vaadinonkotlin_version")
   // Vaadin 14
   implementation("com.vaadin:vaadin-core:$vaadin10_version")
   implementation("com.vaadin:vaadin-spring-boot-starter:$vaadin10_version")

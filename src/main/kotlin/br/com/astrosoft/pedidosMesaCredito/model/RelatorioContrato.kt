@@ -11,7 +11,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
 class RelatorioContrato(val contrato: Contrato) {
   fun build(): ByteArray {
     val jasperFile = "/jasper/MyReports/contratoVenda.jasper"
-    val jasperInputStream = readStream(jasperFile) ?: throw Exception("Relatorio não encontrado")
+    val jasperInputStream = readStream(jasperFile)
     val parameter = hashMapOf<String, Any>()
     val collection = JRBeanCollectionDataSource(listOf(contrato.copy()))
 
