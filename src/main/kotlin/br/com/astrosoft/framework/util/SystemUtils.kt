@@ -87,6 +87,7 @@ object SystemUtils {
   
   fun readStream(file: String ): InputStream{
     val resource = SystemUtils::class.java.getResource(file)
+    println(resource)
     val path = Paths.get(resource.toURI())
     val encoded = Files.readAllBytes(path)
     return ByteArrayInputStream(encoded)
