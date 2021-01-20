@@ -178,7 +178,7 @@ interface IPedidoMesaCreditoView: IView {
     marcaStatusCrediario(pedidoMesaCredito, PENDENTE)
   }
   
-  fun imprimirContrato(pedidoMesaCredito: Contrato?)
+  fun imprimirContrato(contrato: Contrato?)
   
   fun selectTab(status: StatusCrediario)
   fun userSaci(): UserSaci?
