@@ -4,6 +4,7 @@ import br.com.astrosoft.framework.view.addColumnDouble
 import br.com.astrosoft.framework.view.addColumnInt
 import br.com.astrosoft.framework.view.addColumnLocalDateTime
 import br.com.astrosoft.framework.view.addColumnString
+import br.com.astrosoft.framework.view.right
 import br.com.astrosoft.pedidosMesaCredito.model.beans.Contrato
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
 import com.github.mvysny.karibudsl.v10.VaadinDsl
@@ -96,6 +97,7 @@ fun Grid<Contrato>.contratoData() = addColumnString(Contrato::dataContrato) {
 
 fun Grid<Contrato>.contratoTotal() = addColumnString(Contrato::totalAvista) {
   setHeader("Total")
+  right()
   isSortable = false
 }
 
