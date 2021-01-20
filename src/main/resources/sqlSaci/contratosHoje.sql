@@ -9,17 +9,17 @@ SELECT I.storeno,
        I.contrno,
        I.custno,
        I.date,
-       rate / 100                       AS valor,
-       cashamt / 100                    AS valor_contrato,
-       chargeamt / 100                  AS valorEncargos,
-       downpay / 100                    AS valorEntrada,
-       finstdt                          AS pdvno,
-       noofinst                         AS numeroParcelas,
-       empno                            AS vendedor,
-       CONCAT(credanal, ' - ', E.sname) AS analistaNome,
-       credanal                         AS analista,
+       rate / 100                      AS valor,
+       cashamt / 100                   AS valor_contrato,
+       chargeamt / 100                 AS valorEncargos,
+       downpay / 100                   AS valorEntrada,
+       finstdt                         AS pdvno,
+       noofinst                        AS numeroParcelas,
+       empno                           AS vendedor,
+       CONCAT(credanal, ' - ', E.name) AS analistaNome,
+       credanal                        AS analista,
        paymno,
-       IFNULL(A.avalno, 0)              AS avalno
+       IFNULL(A.avalno, 0)             AS avalno
 FROM sqldados.inst          AS I
   LEFT JOIN sqldados.itaval AS A
 	      USING (storeno, contrno)
