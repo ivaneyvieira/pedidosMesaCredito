@@ -44,6 +44,11 @@ fun Grid<PedidoMesaCredito>.colAnalista() = addColumnString(PedidoMesaCredito::a
   isSortable = false
 }
 
+fun Grid<PedidoMesaCredito>.colLimiteDisponivel() = addColumnDouble(PedidoMesaCredito::limiteDisponivel) {
+  setHeader("Limite Disponível")
+  isSortable = false
+}
+
 fun Grid<PedidoMesaCredito>.colStatus() = addColumnString(PedidoMesaCredito::statusPedidoStr) {
   setHeader("Status")
   isSortable = false
@@ -66,6 +71,11 @@ fun Grid<PedidoMesaCredito>.colValor() = addColumnDouble(PedidoMesaCredito::valo
 
 fun Grid<PedidoMesaCredito>.colEntrada() = addColumnDouble(PedidoMesaCredito::entrada) {
   setHeader("Entrada")
+  isSortable = false
+}
+
+fun Grid<PedidoMesaCredito>.colParcelasTotal() = addColumnDouble(PedidoMesaCredito::parcelaTotal) {
+  setHeader("Total Parcelas")
   isSortable = false
 }
 

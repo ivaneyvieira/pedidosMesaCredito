@@ -14,11 +14,16 @@ import java.time.LocalTime
 data class PedidoMesaCredito(val storeno: Int, val pedido: Int, val status: Int, val datePedido: LocalDate,
                              val timePedido: LocalTime, val custno: Int, val nome: String, val filial: String,
                              val valor: Double, val desconto: Double, val entrada: Double, val parcelas: Double,
-                             val quant: Int, val totalFinanciado: Double, val statusCrediario: Int,
-                             val userAnalise: Int, val analistaName: String) {
+                             val parcelaTotal: Double, val quant: Int, val totalFinanciado: Double,
+                             val statusCrediario: Int, val userAnalise: Int, val analistaName: String) {
   fun marcaStatusCrediario(status: StatusCrediario, userSaci: UserSaci) {
     saci.marcaStatusCrediario(storeno, pedido, userSaci.no, status.num)
   }
+  
+  fun limite() = saci.limiteCredito(custno)
+  
+  val limiteDisponivel
+    get() = limite()?.limiteDisponivel ?: 0.00
   
   fun findPedidoStatus() = saci.findPedidoStatus(storeno, pedido)
   

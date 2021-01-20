@@ -3,6 +3,7 @@ package br.com.astrosoft.pedidosMesaCredito.model
 import br.com.astrosoft.framework.model.QueryDB
 import br.com.astrosoft.framework.util.DB
 import br.com.astrosoft.pedidosMesaCredito.model.beans.Contrato
+import br.com.astrosoft.pedidosMesaCredito.model.beans.Limite
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoStatus
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusSaci
@@ -67,6 +68,14 @@ class QuerySaci: QueryDB(driver, url, username, password) {
     val sql = "/sqlSaci/contratosHoje.sql"
     
     return query(sql, Contrato::class)
+  }
+  
+  fun limiteCredito(codigo: Int): Limite? {
+    val sql = "/sqlSaci/limiteCredito.sql"
+    
+    return query(sql, Limite::class){
+      addOptionalParameter("codigo", codigo)
+    }.firstOrNull()
   }
   
   companion object {
