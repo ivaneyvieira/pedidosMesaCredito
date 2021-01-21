@@ -42,9 +42,9 @@ class PainelGridAnalise(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
   override fun filterBar() = FilterBarPedido()
   
   inner class FilterBarPedido: FilterBar(), IFiltroAnalise {
-    lateinit var edtPedido: IntegerField
-    lateinit var edtCliente: TextField
-    lateinit var edtAnalista: TextField
+    private lateinit var edtPedido: IntegerField
+    private lateinit var edtCliente: TextField
+    private lateinit var edtAnalista: TextField
     
     override fun FilterBar.contentBlock() {
       edtPedido = pedido {

@@ -32,14 +32,6 @@ FROM sqldados.itxa       as I
 	       USING (storeno, contrno)
 WHERE I.status NOT IN (1, 5);
 
-/*
-SELECT custno, status, SUM(IF(D.amtdue >= D.amtpaid, D.amtdue - D.amtpaid, 0)/100) as valorDevido
-FROM sqldados.dup AS D
-WHERE type = 0
-  and status in (0, 1, 3, 4, 7, 8, 9)
-GROUP BY custno, status;
-*/
-
 DROP TEMPORARY TABLE IF EXISTS T_VALOR_DEVIDO_DUP;
 CREATE TEMPORARY TABLE T_VALOR_DEVIDO_DUP (
   PRIMARY KEY (custno)
@@ -62,5 +54,5 @@ from sqldados.custp            AS C
 	      ON V.custno = C.no
   LEFT JOIN T_VALOR_DEVIDO_DUP AS D
 	      ON D.custno = C.no
-WHERE no = @CT;
+WHERE no = @CT
 

@@ -30,6 +30,8 @@ class PainelGridPendente(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
     colEntrada()
     colParcelasDesc()
     colAnalista()
+    colParcelasTotal()
+    colLimiteDisponivel()
     (dataProvider as ListDataProvider).setSortComparator {o1, o2 ->
       o1.dataHoraStatus.compareTo(o2.dataHoraStatus)
     }
