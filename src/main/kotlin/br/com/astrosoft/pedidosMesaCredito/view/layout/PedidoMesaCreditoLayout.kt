@@ -24,9 +24,8 @@ import com.vaadin.flow.component.tabs.Tabs
 import com.vaadin.flow.server.PWA
 import com.vaadin.flow.theme.Theme
 import com.vaadin.flow.theme.lumo.Lumo
-import com.vaadin.flow.theme.material.Material
 
-@Theme(value = Lumo::class, variant=Lumo.DARK)
+@Theme(value = Lumo::class, variant = Lumo.DARK)
 @Push
 @PWA(name = AppConfig.title,
      shortName = AppConfig.shortName,

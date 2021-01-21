@@ -5,6 +5,7 @@ val vaadin10_version = "14.4.3"
 val kotlin_version = "1.4.20"
 val spring_boot_version = "2.3.1.RELEASE"
 
+
 plugins {
   id("org.springframework.boot") version "2.3.1.RELEASE"
   id("io.spring.dependency-management") version "1.0.9.RELEASE"
@@ -46,6 +47,7 @@ dependencies {
   providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
   // Vaadin-on-Kotlin dependency, includes Vaadin
   implementation("com.github.mvysny.karibudsl:karibu-dsl:$vaadinonkotlin_version")
+  //implementation("eu.vaadinonkotlin:vok-framework-v10-vokdb:$vaadinonkotlin_version")
   // Vaadin 14
   implementation("com.vaadin:vaadin-core:$vaadin10_version")
   implementation("com.vaadin:vaadin-spring-boot-starter:$vaadin10_version")
@@ -73,6 +75,12 @@ dependencies {
   implementation("org.vaadin.olli:clipboardhelper:1.1.2")
   implementation("com.flowingcode.addons:font-awesome-iron-iconset:2.1.1")
   implementation("com.github.nwillc:poink:0.4.6")
+  //implementation("net.sourceforge.dynamicreports:dynamicreports-core:6.11.1")
+  implementation("net.sf.jasperreports:jasperreports:6.16.0")
+  implementation("com.lowagie:itext:2.1.7")
+
+  // https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports-fonts
+  implementation("net.sf.jasperreports:jasperreports-fonts:6.12.2")
   //  compile("org.webjars.bowergithub.vaadin:vaadin-combo-box:4.2.7")
   //compile("com.github.appreciated:app-layout-addon:4.0.0.rc4")
   implementation("org.vaadin.crudui:crudui:4.1.0")
@@ -89,7 +97,7 @@ vaadin {
   if (gradle.startParameter.taskNames.contains("stage")) {
     productionMode = true
   }
-  pnpmEnable = true
+  pnpmEnable = false
 }
 
 

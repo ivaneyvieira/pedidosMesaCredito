@@ -19,7 +19,6 @@ import com.vaadin.flow.component.ComponentEvent
 import com.vaadin.flow.component.ComponentEventListener
 import com.vaadin.flow.component.DomEvent
 import com.vaadin.flow.component.HasComponents
-import com.vaadin.flow.component.Key
 import com.vaadin.flow.component.Key.ENTER
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant
@@ -74,33 +73,21 @@ abstract class ViewLayout<VM: ViewModel<*>>: VerticalLayout(), IView, BeforeLeav
   abstract fun isAccept(): Boolean
   
   override fun showError(msg: String) {
-    ConfirmDialog.createError()
-      .withCaption("Erro do aplicativo")
-      .withMessage(msg)
-      .open()
+    ConfirmDialog.createError().withCaption("Erro do aplicativo").withMessage(msg).open()
   }
   
   override fun showWarning(msg: String) {
-    ConfirmDialog.createWarning()
-      .withCaption("Aviso")
-      .withMessage(msg)
-      .open()
+    ConfirmDialog.createWarning().withCaption("Aviso").withMessage(msg).open()
   }
   
   override fun showInformation(msg: String) {
-    ConfirmDialog.createInfo()
-      .withCaption("Informação")
-      .withMessage(msg)
-      .open()
+    ConfirmDialog.createInfo().withCaption("Informação").withMessage(msg).open()
   }
   
   fun showForm(caption: String, form: FormLayout, runConfirm: (() -> Unit)) {
-    ConfirmDialog.create()
-      .withCaption(caption)
-      .withMessage(form)
+    ConfirmDialog.create().withCaption(caption).withMessage(form)
       .withButton(OK, Runnable {runConfirm()}, caption("Confirma"), closeOnClick(true), ButtonEnter())
-      .withCancelButton(caption("Cancela"))
-      .open()
+      .withCancelButton(caption("Cancela")).open()
   }
   
   fun showQuestion(msg: String, execYes: () -> Unit) {
@@ -108,14 +95,9 @@ abstract class ViewLayout<VM: ViewModel<*>>: VerticalLayout(), IView, BeforeLeav
   }
   
   private fun showQuestion(msg: String, execYes: () -> Unit, execNo: () -> Unit) {
-    ConfirmDialog.createQuestion()
-      .withCaption("Confirmação")
-      .withMessage(msg)
-      .withYesButton(Runnable {
+    ConfirmDialog.createQuestion().withCaption("Confirmação").withMessage(msg).withYesButton(Runnable {
         execYes()
-      }, caption("Sim"))
-      .withNoButton(Runnable {execNo()}, caption("Não"))
-      .open()
+      }, caption("Sim")).withNoButton(Runnable {execNo()}, caption("Não")).open()
   }
   
   override fun beforeLeave(event: BeforeLeaveEvent?) {
@@ -184,8 +166,7 @@ fun <T> (@VaadinDsl Grid<T>).addColumnBool(property: KProperty1<T, Boolean?>,
 
 fun <T> (@VaadinDsl Grid<T>).addColumnLocalDate(property: KProperty1<T, LocalDate?>,
                                                 block: (@VaadinDsl Grid.Column<T>).() -> Unit = {}): Grid.Column<T> {
-  val column = this.addColumnFor(property, renderer = LocalDateRenderer(property, "dd/MM/yyyy"))
-  //column.width = "8em"
+  val column = this.addColumnFor(property, renderer = LocalDateRenderer(property, "dd/MM/yyyy")) //column.width = "8em"
   column.isAutoWidth = true
   column.left()
   
@@ -201,8 +182,9 @@ fun <T> (@VaadinDsl Grid<T>).addColumnLocalDate(property: KProperty1<T, LocalDat
 
 fun <T> (@VaadinDsl Grid<T>).addColumnLocalDateTime(property: KProperty1<T, LocalDateTime?>,
                                                     block: (@VaadinDsl Grid.Column<T>).() -> Unit = {}): Grid.Column<T> {
-  val column = this.addColumnFor(property, renderer = LocalDateTimeRenderer(property, "dd/MM/yyyy hh:mm:ss"))
-  //column.width = "8em"
+  val column =
+    this.addColumnFor(property,
+                      renderer = LocalDateTimeRenderer(property, "dd/MM/yyyy hh:mm:ss")) //column.width = "8em"
   column.isAutoWidth = true
   column.left()
   column.setComparator {a, b ->
@@ -284,15 +266,13 @@ fun <T> (@VaadinDsl Grid<T>).addColumnDouble(property: KProperty1<T, Double?>,
   return column
 }
 
-fun <T> (@VaadinDsl Grid<T>).addColumnButton(iconButton: VaadinIcon,
-                                             tooltip: String? = null,
+fun <T> (@VaadinDsl Grid<T>).addColumnButton(iconButton: VaadinIcon, tooltip: String? = null,
                                              execButton: (T) -> Unit = {},
                                              block: (@VaadinDsl Grid.Column<T>).() -> Unit = {}): Grid.Column<T> {
   return addComponentColumn {bean ->
     Icon(iconButton).apply {
       this.style.set("cursor", "pointer");
-      if(tooltip != null)
-        this.tooltip = tooltip
+      if(tooltip != null) this.tooltip = tooltip
       onLeftClick {
         execButton(bean)
       }
@@ -304,8 +284,7 @@ fun <T> (@VaadinDsl Grid<T>).addColumnButton(iconButton: VaadinIcon,
   }
 }
 
-fun <T> (@VaadinDsl Grid<T>).addColumnButtonClipBoard(iconButton: VaadinIcon,
-                                                      execButton: (T) -> Unit = {},
+fun <T> (@VaadinDsl Grid<T>).addColumnButtonClipBoard(iconButton: VaadinIcon, execButton: (T) -> Unit = {},
                                                       textToClipBoard: T.() -> String,
                                                       block: (@VaadinDsl Grid.Column<T>).() -> Unit = {}): Grid.Column<T> {
   return addComponentColumn {bean ->
@@ -367,24 +346,19 @@ class TabClick(s: String?): Tab(s) {
 fun DatePicker.localePtBr() {
   this.locale = Locale("pt-br")
   this.i18n =
-    DatePickerI18n().setWeek("semana")
-      .setCalendar("calendário")
-      .setClear("apagar")
-      .setToday("hoje")
-      .setCancel("cancelar")
-      .setFirstDayOfWeek(1)
-      .setMonthNames(Arrays.asList("janeiro",
-                                   "fevereiro",
-                                   "março",
-                                   "abril",
-                                   "maio",
-                                   "junho",
-                                   "julho",
-                                   "agosto",
-                                   "setembro",
-                                   "outubro",
-                                   "novembro",
-                                   "dezembro"))
+    DatePickerI18n().setWeek("semana").setCalendar("calendário").setClear("apagar").setToday("hoje")
+      .setCancel("cancelar").setFirstDayOfWeek(1).setMonthNames(Arrays.asList("janeiro",
+                                                                              "fevereiro",
+                                                                              "março",
+                                                                              "abril",
+                                                                              "maio",
+                                                                              "junho",
+                                                                              "julho",
+                                                                              "agosto",
+                                                                              "setembro",
+                                                                              "outubro",
+                                                                              "novembro",
+                                                                              "dezembro"))
       .setWeekdays(Arrays.asList("domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"))
       .setWeekdaysShort(Arrays.asList("dom", "seg", "ter", "qua", "qui", "sex", "sab"))
 }
@@ -395,7 +369,7 @@ fun <T> ListDataProvider<T>.updateItens(itens: List<T>) {
   this.refreshAll()
 }
 
-fun <T : Any> TabSheet.tabGrid(label: String, painelGrid: PainelGrid<T>) = tab {
+fun <T: Any> TabSheet.tabGrid(label: String, painelGrid: PainelGrid<T>) = tab {
   painelGrid
 }.apply {
   val button = Button(label) {
@@ -405,8 +379,8 @@ fun <T : Any> TabSheet.tabGrid(label: String, painelGrid: PainelGrid<T>) = tab {
   this.addComponentAsFirst(button)
 }
 
-class ButtonEnter : ButtonOption() {
+class ButtonEnter: ButtonOption() {
   override fun apply(confirmDialog: ConfirmDialog?, button: Button?) {
-   button?.addClickShortcut(ENTER)
+    button?.addClickShortcut(ENTER)
   }
 }

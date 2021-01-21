@@ -52,26 +52,25 @@ import org.vaadin.gatanaso.MultiselectComboBox
 class UsuarioView: ViewLayout<UsuarioViewModel>(), IUsuarioView {
   override val viewModel = UsuarioViewModel(this)
   
-  override fun isAccept() = AppConfig.userSaci?.roles()
-    ?.contains("ADMIN") == true
+  override fun isAccept() = AppConfig.userSaci?.roles()?.contains("ADMIN") == true
   
   init {
     form("Editor de usuários")
     setSizeFull()
-    val crud: GridCrud<UserSaci> = gridCrud()
-    // layout configuration
+    val crud: GridCrud<UserSaci> = gridCrud() // layout configuration
     setSizeFull()
-    this.add(crud)
-    // logic configuration
+    this.add(crud) // logic configuration
     setOperation(crud)
   }
   
   private fun gridCrud(): GridCrud<UserSaci> {
     val crud: GridCrud<UserSaci> = GridCrud(UserSaci::class.java)
-    crud.grid
-      .setColumns(UserSaci::no.name, UserSaci::login.name, UserSaci::funcionario.name ,UserSaci::storeno.name, UserSaci::name.name)
-    crud.grid.getColumnBy(UserSaci::storeno)
-      .setHeader("Loja")
+    crud.grid.setColumns(UserSaci::no.name,
+                         UserSaci::login.name,
+                         UserSaci::funcionario.name,
+                         UserSaci::storeno.name,
+                         UserSaci::name.name)
+    crud.grid.getColumnBy(UserSaci::storeno).setHeader("Loja")
     
     crud.grid.addThemeVariants(LUMO_COMPACT, LUMO_ROW_STRIPES, LUMO_COLUMN_BORDERS)
     
@@ -81,11 +80,10 @@ class UsuarioView: ViewLayout<UsuarioViewModel>(), IUsuarioView {
   }
   
   private fun setOperation(crud: GridCrud<UserSaci>) {
-    crud.setOperations(
-      {viewModel.findAll()},
-      {user: UserSaci -> viewModel.add(user)},
-      {user: UserSaci? -> viewModel.update(user)},
-      {user: UserSaci? -> viewModel.delete(user)})
+    crud.setOperations({viewModel.findAll()},
+                       {user: UserSaci -> viewModel.add(user)},
+                       {user: UserSaci? -> viewModel.update(user)},
+                       {user: UserSaci? -> viewModel.delete(user)})
   }
   
   private fun Grid<UserSaci>.addColumnBool(caption: String, value: UserSaci.() -> Boolean) {
@@ -101,9 +99,7 @@ class UsuarioView: ViewLayout<UsuarioViewModel>(), IUsuarioView {
 class UserCrudFormFactory(private val viewModel: UsuarioViewModel): AbstractCrudFormFactory<UserSaci>() {
   private lateinit var comboAbreviacao: MultiselectComboBox<String>
   
-  override fun buildNewForm(operation: CrudOperation?,
-                            domainObject: UserSaci?,
-                            readOnly: Boolean,
+  override fun buildNewForm(operation: CrudOperation?, domainObject: UserSaci?, readOnly: Boolean,
                             cancelButtonClickListener: ComponentEventListener<ClickEvent<Button>>?,
                             operationButtonClickListener: ComponentEventListener<ClickEvent<Button>>?): Component {
     val binder = Binder<UserSaci>(UserSaci::class.java)
@@ -111,46 +107,38 @@ class UserCrudFormFactory(private val viewModel: UsuarioViewModel): AbstractCrud
       isSpacing = false
       isMargin = false
       formLayout {
-        if(operation in listOf(READ, DELETE, UPDATE))
-          integerField("Número") {
-            isReadOnly = true
-            binder.bind(this, UserSaci::no.name)
+        if(operation in listOf(READ, DELETE, UPDATE)) integerField("Número") {
+          isReadOnly = true
+          binder.bind(this, UserSaci::no.name)
+        }
+        if(operation in listOf(ADD, READ, DELETE, UPDATE)) comboBox<UserSaci>("Login") {
+          val allUser = viewModel.findAllUser()
+          val filter: ItemFilter<UserSaci> = ItemFilter {user: UserSaci, filterString: String ->
+            user.login.contains(filterString, ignoreCase = true) || user.name.contains(filterString,
+                                                                                       ignoreCase = true) || user.no == filterString.toIntOrNull() ?: 0
           }
-        if(operation in listOf(ADD, READ, DELETE, UPDATE))
-          comboBox<UserSaci>("Login") {
-            val allUser = viewModel.findAllUser()
-            val filter: ItemFilter<UserSaci> =
-              ItemFilter {user: UserSaci, filterString: String ->
-                user.login
-                  .contains(filterString, ignoreCase = true)
-                || user.name
-                  .contains(filterString, ignoreCase = true)
-                || user.no == filterString.toIntOrNull() ?: 0
-              }
-            this.setItems(filter, allUser)
-            this.setItemLabelGenerator(UserSaci::login)
-            this.setRenderer(TemplateRenderer.of<UserSaci>("<div>[[item.login]]<br><small>[[item.nome]]</small></div>")
-                               .withProperty("login") {
-                                 it.login
-                               }
-                               .withProperty("nome") {user ->
-                                 "${user.no} - ${user.name}"
-                               })
-            binder.bind(this, {bean ->
-              bean
-            }, {bean, field ->
-                          bean.no = field.no
-                          bean.name = field.name
-                          bean.login = field.login
-                        })
-          }
-        if(operation in listOf(READ, DELETE, UPDATE))
-          textField("Nome") {
-            isReadOnly = true
-            binder.bind(this, UserSaci::name.name)
-          }
+          this.setItems(filter, allUser)
+          this.setItemLabelGenerator(UserSaci::login)
+          this.setRenderer(TemplateRenderer.of<UserSaci>("<div>[[item.login]]<br><small>[[item.nome]]</small></div>")
+                             .withProperty("login") {
+                               it.login
+                             }.withProperty("nome") {user ->
+              "${user.no} - ${user.name}"
+            })
+          binder.bind(this, {bean ->
+            bean
+          }, {bean, field ->
+                        bean.no = field.no
+                        bean.name = field.name
+                        bean.login = field.login
+                      })
+        }
+        if(operation in listOf(READ, DELETE, UPDATE)) textField("Nome") {
+          isReadOnly = true
+          binder.bind(this, UserSaci::name.name)
+        }
         if(operation in listOf(ADD, READ, DELETE, UPDATE)) {
-          textField("Funcionario"){
+          textField("Funcionario") {
             isReadOnly = false
             binder.bind(this, UserSaci::funcionario.name)
           }
@@ -195,10 +183,7 @@ class UserCrudFormFactory(private val viewModel: UsuarioViewModel): AbstractCrud
   }
   
   override fun showError(operation: CrudOperation?, e: Exception?) {
-    ConfirmDialog.createError()
-      .withCaption("Erro do aplicativo")
-      .withMessage(e?.message ?: "Erro desconhecido")
-      .open()
+    ConfirmDialog.createError().withCaption("Erro do aplicativo").withMessage(e?.message ?: "Erro desconhecido").open()
   }
   
   companion object {

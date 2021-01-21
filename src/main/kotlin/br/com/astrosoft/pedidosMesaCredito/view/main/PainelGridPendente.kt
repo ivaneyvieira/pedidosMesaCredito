@@ -15,9 +15,10 @@ import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.provider.DataProvider
 import com.vaadin.flow.data.provider.ListDataProvider
 
-class PainelGridPendente(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit): PainelGrid<PedidoMesaCredito>(view, blockUpdate) {
+class PainelGridPendente(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
+  PainelGrid<PedidoMesaCredito>(view, blockUpdate) {
   override fun Grid<PedidoMesaCredito>.gridConfig() {
-    addColumnButton(VaadinIcon.THUMBS_UP_O, "Aprova proposta",view::marcaAprovado)
+    addColumnButton(VaadinIcon.THUMBS_UP_O, "Aprova proposta", view::marcaAprovado)
     addColumnButton(VaadinIcon.THUMBS_DOWN_O, "Reprova proposta", view::marcaReprovado)
     colNumPedido()
     colDataHoraPedido()
@@ -29,6 +30,8 @@ class PainelGridPendente(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
     colEntrada()
     colParcelasDesc()
     colAnalista()
+    colParcelasTotal()
+    colLimiteDisponivel()
     (dataProvider as ListDataProvider).setSortComparator {o1, o2 ->
       o1.dataHoraStatus.compareTo(o2.dataHoraStatus)
     }

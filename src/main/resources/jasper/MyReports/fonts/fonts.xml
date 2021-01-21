@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontFamilies>
+	<fontFamily name="Compacta">
+		<normal><![CDATA[/home/ivaneyvieira/git/pedidosMesaCredito/src/main/resources/jasper/MyReports/fonts/tw-cen-mt-condensed-3.ttf]]></normal>
+		<pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+		<exportFonts/>
+	</fontFamily>
+</fontFamilies>

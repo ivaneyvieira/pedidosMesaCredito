@@ -27,7 +27,7 @@ SELECT O.storeno,
        discount / 100          AS desconto,
        O.s16                   AS statusCrediario,
        O.s15                   AS userAnalise,
-       IFNULL(U.auxStr, '')     AS analistaName
+       IFNULL(U.auxStr, '')    AS analistaName
 FROM sqldados.eord             AS O
   LEFT JOIN  sqldados.custp    AS C
 	       ON C.no = O.custno
@@ -73,6 +73,7 @@ SELECT P.storeno,
        desconto,
        entrada,
        ROUND((valor - entrada + totalJuros) / quant, 2) AS parcelas,
+       ROUND((valor - entrada + totalJuros), 2)         AS parcelaTotal,
        quant,
        (valor - entrada)                                AS totalFinanciado,
        P.statusCrediario                                AS statusCrediario,

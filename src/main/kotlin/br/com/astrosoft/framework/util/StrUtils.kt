@@ -5,7 +5,7 @@ fun String?.lpad(size: Int, filler: String): String {
   if(str.length > size) return str.substring(0, size)
   val buf = StringBuilder(str)
   while(buf.length < size) buf.insert(0, filler)
-
+  
   str = buf.toString()
   return str
 }
@@ -15,7 +15,7 @@ fun String?.rpad(size: Int, filler: String): String {
   if(str.length > size) return str.substring(0, size)
   val buf = StringBuilder(str)
   while(buf.length < size) buf.append(filler)
-
+  
   return buf.toString()
 }
 
@@ -50,8 +50,7 @@ fun parameterNames(sql: String): List<String> {
   val regex = Regex(":([a-zA-Z0-9_]+)")
   val matches = regex.findAll(sql)
   return matches.map {it.groupValues}.toList().flatten().filter {!it.startsWith(":")}
-}
-/*
+}/*
 @Suppress("UNCHECKED_CAST")
 fun readInstanceProperty(instance: Any, propertyName: String): Any? {
   val property = instance::class.memberProperties

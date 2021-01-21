@@ -9,7 +9,6 @@ import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
 import com.vaadin.flow.theme.Theme
 import com.vaadin.flow.theme.lumo.Lumo
-import com.vaadin.flow.theme.material.Material
 
 @Route("login")
 @PageTitle("Login")
@@ -18,16 +17,11 @@ class LoginView: VerticalLayout(), BeforeEnterObserver {
   private val loginFormApp = LoginFormApp()
   
   override fun beforeEnter(beforeEnterEvent: BeforeEnterEvent) {
-    if(isError(beforeEnterEvent))
-      loginFormApp.isError = true
+    if(isError(beforeEnterEvent)) loginFormApp.isError = true
   }
   
   private fun isError(beforeEnterEvent: BeforeEnterEvent): Boolean {
-    return beforeEnterEvent.location
-      .queryParameters
-      .parameters
-      .getOrDefault("error", emptyList())
-      .isNotEmpty()
+    return beforeEnterEvent.location.queryParameters.parameters.getOrDefault("error", emptyList()).isNotEmpty()
   }
   
   init {
