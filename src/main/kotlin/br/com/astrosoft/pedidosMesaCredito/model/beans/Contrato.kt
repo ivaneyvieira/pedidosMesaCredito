@@ -7,7 +7,7 @@ data class Contrato(val loja: String, val contrato: String, val nomeCliente: Str
                val enderecoAvalista: String, val totalAvista: String, val despesas: String, val entrada: String,
                val afinanciar: String, val plano: String, val numeroContrato: String, val grupo: String,
                val dataVenda: String, val dataVencimento: String, val analistaNome: String, val dataContrato: String,
-               val valorAprovado: String) {
+               val valorAprovado: String, val pedido: String) {
   fun filtroCliente(cliente: String): Boolean {
     return nomeCliente.contains(cliente) || codigoCliente.startsWith(cliente)
   }
@@ -18,8 +18,5 @@ data class Contrato(val loja: String, val contrato: String, val nomeCliente: Str
   
   companion object {
     fun findContratos() = saci.findContratos()
-    
-    fun findTesteDados() =
-      listOf(Contrato("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
   }
 }

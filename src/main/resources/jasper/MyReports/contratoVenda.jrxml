@@ -32,6 +32,7 @@
 	<field name="analistaNome" class="java.lang.String"/>
 	<field name="dataContrato" class="java.lang.String"/>
 	<field name="valorAprovado" class="java.lang.String"/>
+	<field name="pedido" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -410,7 +411,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA["<b>Plano 2:</b><br>"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["<b>Pedido:</b><br>" +$F{pedido}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="40" y="120" width="500" height="20" uuid="b0b4f815-32f8-4365-9155-fc6667a22924">
