@@ -76,6 +76,7 @@ CREATE TEMPORARY TABLE T_GRUPO (
 )
 SELECT C.storeno,
        contrno,
+       P.eordno                                                 as pedido,
        CAST(X.date AS DATE)                                     as dataCompra,
        GROUP_CONCAT(DISTINCT cl.name ORDER BY (X.price * qtty)) AS nomeGrupo
 FROM T_CONTRATOS             AS C
@@ -83,6 +84,8 @@ FROM T_CONTRATOS             AS C
 	       USING (storeno, contrno)
   INNER JOIN sqldados.xalog2 AS X
 	       ON X.storeno = H.storeno AND X.pdvno = H.pdvno AND X.xano = H.xano
+  INNER JOIN sqlpdv.pxa      AS P
+	       ON P.storeno = H.storeno AND P.pdvno = H.pdvno AND P.xano = H.xano
   INNER JOIN sqldados.cl
 	       ON cl.no = MID(X.clno, 1, 2) * 10000
 WHERE status = 45
@@ -120,7 +123,8 @@ SELECT CONCAT(C.storeno)                                                    AS l
        DATE_FORMAT(CAST(P.duedate AS DATE), '%d/%m/%Y')                     AS dataVencimento,
        analistaNome                                                         AS analistaNome,
        DATE_FORMAT(C.date, '%d/%m/%Y')                                      AS dataContrato,
-       sqldados.moneyformat2(C.valor - C.valorEntrada + C.valorEncargos, 2) AS valorAprovado
+       sqldados.moneyformat2(C.valor - C.valorEntrada + C.valorEncargos, 2) AS valorAprovado,
+       CAST(IFNULL(G.pedido, '') AS CHAR)                                   AS pedido
 FROM T_CONTRATOS        AS C
   LEFT JOIN  T_GRUPO    AS G
 	       USING (storeno, contrno)
