@@ -121,7 +121,7 @@ SELECT CONCAT(C.storeno)                                                    AS l
        LPAD(C.paymno, 3, '0')                                               AS plano,
        CONCAT(LPAD(C.storeno, 2, '0'), '-', C.contrno)                      AS numeroContrato,
        CAST(IFNULL(G.nomeGrupo, '-') AS CHAR)                               AS grupo,
-       DATE_FORMAT(G.dataCompra, '%d/%m/%Y')                                AS dataVenda,
+       IFNULL(DATE_FORMAT(G.dataCompra, '%d/%m/%Y'), '')                    AS dataVenda,
        DATE_FORMAT(CAST(P.duedate AS DATE), '%d/%m/%Y')                     AS dataVencimento,
        analistaNome                                                         AS analistaNome,
        DATE_FORMAT(C.date, '%d/%m/%Y')                                      AS dataContrato,
