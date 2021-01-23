@@ -106,27 +106,27 @@ FROM T_CONTRATOS           AS C
 WHERE instno = 1
 GROUP BY C.storeno, C.contrno;
 
-SELECT CONCAT(C.storeno)                                                    AS loja,
-       CONCAT(C.contrno)                                                    AS contrato,
-       TC.name                                                              AS nomeCliente,
-       CONCAT(TC.custno)                                                    AS codigoCliente,
-       TC.endereco                                                          AS enderecoCliente,
-       IFNULL(TA.name, '')                                                  AS nomeAvalista,
-       IFNULL(CONCAT(TA.custno), '')                                        AS codigoAvalista,
-       IFNULL(TA.endereco, '')                                              AS enderecoAvalista,
-       sqldados.moneyformat2(C.valor, 2)                                    AS totalAvista,
-       sqldados.moneyformat2(C.valorEncargos, 2)                            AS despesas,
-       sqldados.moneyformat2(C.valorEntrada, 2)                             AS entrada,
-       sqldados.moneyformat2(C.valor - C.valorEntrada, 2)                   AS afinanciar,
-       LPAD(C.paymno, 3, '0')                                               AS plano,
-       CONCAT(LPAD(C.storeno, 2, '0'), '-', C.contrno)                      AS numeroContrato,
-       CAST(IFNULL(G.nomeGrupo, '-') AS CHAR)                               AS grupo,
-       IFNULL(DATE_FORMAT(G.dataCompra, '%d/%m/%Y'), '')                    AS dataVenda,
-       DATE_FORMAT(CAST(P.duedate AS DATE), '%d/%m/%Y')                     AS dataVencimento,
-       analistaNome                                                         AS analistaNome,
-       DATE_FORMAT(C.date, '%d/%m/%Y')                                      AS dataContrato,
-       sqldados.moneyformat2(C.valor - C.valorEntrada + C.valorEncargos, 2) AS valorAprovado,
-       CAST(IFNULL(G.pedido, '') AS CHAR)                                   AS pedido
+SELECT CONCAT(C.storeno)                                                           AS loja,
+       CONCAT(C.contrno)                                                           AS contrato,
+       TC.name                                                                     AS nomeCliente,
+       CONCAT(TC.custno)                                                           AS codigoCliente,
+       TC.endereco                                                                 AS enderecoCliente,
+       IFNULL(TA.name, '')                                                         AS nomeAvalista,
+       IFNULL(CONCAT(TA.custno), '')                                               AS codigoAvalista,
+       IFNULL(TA.endereco, '')                                                     AS enderecoAvalista,
+       sqldados.moneyformat2(C.valor, 2)                                           AS totalAvista,
+       sqldados.moneyformat2(C.valorEncargos, 2)                                   AS despesas,
+       sqldados.moneyformat2(C.valorEntrada, 2)                                    AS entrada,
+       sqldados.moneyformat2(C.valor - C.valorEntrada, 2)                          AS afinanciar,
+       LPAD(C.paymno, 3, '0')                                                      AS plano,
+       CONCAT(LPAD(C.storeno, 2, '0'), '-', C.contrno)                             AS numeroContrato,
+       CAST(IFNULL(G.nomeGrupo, '-') AS CHAR)                                      AS grupo,
+       IFNULL(DATE_FORMAT(IFNULL(G.dataCompra, current_date * 1), '%d/%m/%Y'), '') AS dataVenda,
+       DATE_FORMAT(CAST(P.duedate AS DATE), '%d/%m/%Y')                            AS dataVencimento,
+       analistaNome                                                                AS analistaNome,
+       DATE_FORMAT(C.date, '%d/%m/%Y')                                             AS dataContrato,
+       sqldados.moneyformat2(C.valor - C.valorEntrada + C.valorEncargos, 2)        AS valorAprovado,
+       CAST(IFNULL(G.pedido, '') AS CHAR)                                          AS pedido
 FROM T_CONTRATOS        AS C
   LEFT JOIN  T_GRUPO    AS G
 	       USING (storeno, contrno)
