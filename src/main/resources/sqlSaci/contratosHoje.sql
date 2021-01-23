@@ -76,18 +76,20 @@ CREATE TEMPORARY TABLE T_GRUPO (
 )
 SELECT C.storeno,
        contrno,
-       P.eordno                                                 as pedido,
-       CAST(X.date AS DATE)                                     as dataCompra,
-       GROUP_CONCAT(DISTINCT cl.name ORDER BY (X.price * qtty)) AS nomeGrupo
+       P.eordno                                                         AS pedido,
+       CAST(P.date AS DATE)                                             AS dataCompra,
+       GROUP_CONCAT(DISTINCT cl.name ORDER BY (PI.acc_price * PI.qtty)) AS nomeGrupo
 FROM T_CONTRATOS             AS C
   INNER JOIN sqldados.ithist AS H
 	       USING (storeno, contrno)
-  INNER JOIN sqldados.xalog2 AS X
-	       ON X.storeno = H.storeno AND X.pdvno = H.pdvno AND X.xano = H.xano
   INNER JOIN sqlpdv.pxa      AS P
 	       ON P.storeno = H.storeno AND P.pdvno = H.pdvno AND P.xano = H.xano
+  INNER JOIN sqlpdv.pxaprd   AS PI
+	       ON PI.storeno = H.storeno AND PI.pdvno = H.pdvno AND PI.xano = H.xano
+  INNER JOIN sqldados.prd    AS PP
+	       ON PP.no = PI.prdno
   INNER JOIN sqldados.cl
-	       ON cl.no = MID(X.clno, 1, 2) * 10000
+	       ON cl.no = PP.groupno
 WHERE status = 45
 GROUP BY C.storeno, C.contrno;
 
