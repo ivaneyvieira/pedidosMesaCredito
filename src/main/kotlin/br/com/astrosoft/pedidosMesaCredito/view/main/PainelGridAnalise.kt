@@ -21,7 +21,8 @@ class PainelGridAnalise(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
     addColumnButton(VaadinIcon.THUMBS_UP_O, "Aprova proposta", view::marcaAprovado)
     addColumnButton(VaadinIcon.THUMBS_DOWN_O, "Reprova proposta", view::marcaReprovado)
     addColumnButton(VaadinIcon.CLOCK, "Proposta pendente", view::marcaPendente)
-    
+    addColumnButton(VaadinIcon.COG_O, "Capacitor", view::pesquisaCapacitor)
+
     colNumPedido()
     colDataHoraPedido()
     colCodigo()

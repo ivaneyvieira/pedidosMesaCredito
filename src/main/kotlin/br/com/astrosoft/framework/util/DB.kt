@@ -11,14 +11,20 @@ class DB(banco: String) {
   val username = prop?.getProperty("datasource.$banco.username") ?: ""
   val password = prop?.getProperty("datasource.$banco.password") ?: ""
   val test = prop?.getProperty("test") == "true"
-  
+  val consultaBACEN = prop?.getProperty("bacen") == "true"
+
+  val accessKey = prop?.getProperty("api.ibratan.accessKey") ?: ""
+  val secretKey = prop?.getProperty("api.ibratan.secretKey") ?: ""
+  val companyId = prop?.getProperty("api.ibratan.companyId") ?: ""
+  val costCenter = prop?.getProperty("api.ibratan.costCenter")?.toIntOrNull() ?: 0
+
   companion object {
     private val propertieFile = System.getProperty("ebean.props.file")
-    
+
     private fun properties(): Properties? {
       val properties = Properties()
       val file = File(propertieFile)
-      
+
       properties.load(FileReader(file))
       return properties
     }

@@ -2,18 +2,17 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val vaadinonkotlin_version = "1.0.3"
 val vaadin10_version = "14.4.3"
-val kotlin_version = "1.4.20"
+val kotlin_version = "1.4.32"
 val spring_boot_version = "2.3.1.RELEASE"
-
 
 plugins {
   id("org.springframework.boot") version "2.3.1.RELEASE"
   id("io.spring.dependency-management") version "1.0.9.RELEASE"
-  kotlin("jvm") version "1.4.20"
+  kotlin("jvm") version "1.4.32"
   id("org.gretty") version "3.0.3"
   war
   id("com.vaadin") version "0.14.3.7"
-  kotlin("plugin.spring") version "1.4.20"
+  kotlin("plugin.spring") version "1.4.32"
 }
 
 defaultTasks("clean", "vaadinBuildFrontend", "build")
@@ -29,12 +28,11 @@ repositories {
 gretty {
   contextPath = "/"
   servletContainer = "jetty9.4"
-  // managedClassReload = true // temporarily disabled because of https://github.com/gretty-gradle-plugin/gretty/issues/166
 }
 
 val staging by configurations.creating
 
-tasks.withType<KotlinCompile> {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
   kotlinOptions.jvmTarget = "1.8"
 }
 
@@ -60,11 +58,17 @@ dependencies {
   implementation("org.slf4j:slf4j-api:1.7.30")
   //implementation("org.slf4j:slf4j-simple:1.7.30")
   implementation("org.sql2o:sql2o:1.6.0")
-  implementation("mysql:mysql-connector-java:5.1.48")
+  implementation("mysql:mysql-connector-java:5.1.49")
   implementation("com.zaxxer:HikariCP:3.4.1")
   implementation("org.imgscalr:imgscalr-lib:4.2")
   implementation("com.jcraft:jsch:0.1.55")
   implementation("org.cups4j:cups4j:0.7.6")
+  // https://mvnrepository.com/artifact/com.beust/klaxon
+  implementation ("com.beust:klaxon:5.5")
+  // https://mvnrepository.com/artifact/com.konghq/unirest-java
+  implementation("com.konghq:unirest-java:3.11.11")
+
+
   // logging
   // currently we are logging through the SLF4J API to SLF4J-Simple. See src/main/resources/simplelogger.properties file for the logger configuration
   //implementation("com.github.appreciated:app-layout-addon:3.0.0.beta5")
@@ -81,6 +85,12 @@ dependencies {
 
   // https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports-fonts
   implementation("net.sf.jasperreports:jasperreports-fonts:6.12.2")
+  implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.0"))
+
+  // define any required OkHttp artifacts without version
+  implementation("com.squareup.okhttp3:okhttp")
+  implementation("com.squareup.okhttp3:logging-interceptor")
+
   //  compile("org.webjars.bowergithub.vaadin:vaadin-combo-box:4.2.7")
   //compile("com.github.appreciated:app-layout-addon:4.0.0.rc4")
   implementation("org.vaadin.crudui:crudui:4.1.0")
@@ -94,9 +104,7 @@ dependencies {
 }
 
 vaadin {
-  if (gradle.startParameter.taskNames.contains("stage")) {
-    productionMode = true
-  }
+  productionMode = false
   pnpmEnable = false
 }
 

@@ -8,7 +8,7 @@ SELECT no AS paymno,
 FROM sqldados.paym
 WHERE no IN (900, 903, 904, 905, 913, 953);
 
-DO @HOJE := current_date * 1;
+DO @HOJE := CURRENT_DATE * 1;
 DO @DATA := @HOJE;
 
 DROP TABLE IF EXISTS TPedido;
@@ -16,18 +16,20 @@ CREATE TEMPORARY TABLE TPedido (
   PRIMARY KEY (storeno, pedido)
 )
 SELECT O.storeno,
-       O.ordno                 AS pedido,
+       O.ordno                                            AS pedido,
        O.status,
-       cast(O.date AS DATE)    AS datePedido,
-       SEC_TO_TIME(O.l4)       AS timePedido,
+       CAST(O.date AS DATE)                               AS datePedido,
+       SEC_TO_TIME(O.l4)                                  AS timePedido,
        O.custno,
-       C.name                  AS nome,
-       IFNULL(S.otherName, '') AS filial,
-       O.amount / 100          AS valor,
-       discount / 100          AS desconto,
-       O.s16                   AS statusCrediario,
-       O.s15                   AS userAnalise,
-       IFNULL(U.auxStr, '')    AS analistaName
+       C.name                                             AS nome,
+       C.cpf_cgc                                          AS documento,
+       CAST(IF(C.birthday = 0, NULL, C.birthday) AS DATE) AS dtNascimento,
+       IFNULL(S.otherName, '')                            AS filial,
+       O.amount / 100                                     AS valor,
+       discount / 100                                     AS desconto,
+       O.s16                                              AS statusCrediario,
+       O.s15                                              AS userAnalise,
+       IFNULL(U.auxStr, '')                               AS analistaName
 FROM sqldados.eord             AS O
   LEFT JOIN  sqldados.custp    AS C
 	       ON C.no = O.custno
@@ -44,16 +46,27 @@ WHERE O.date = @DATA
   AND C.no IS NOT NULL
   AND M.paymno IS NOT NULL;
 
+DROP TEMPORARY TABLE IF EXISTS T_RENDA;
+CREATE TEMPORARY TABLE T_RENDA (
+  PRIMARY KEY (custno)
+)
+SELECT custno, SUM(declarada / 100 + comprovada / 100) AS renda
+FROM sqldados.ctrenda
+WHERE auxShort1 = 0
+  AND custno IN (SELECT custno
+		 FROM TPedido)
+GROUP BY custno;
+
 DROP TABLE IF EXISTS TSIMULADOR;
 CREATE TEMPORARY TABLE TSIMULADOR (
   PRIMARY KEY (storeno, pedido)
 )
 SELECT E.storeno,
        E.ordno                                       AS pedido,
-       SUM(if(seqno = 0, amt / 100, 0))              AS entrada,
-       ROUND(AVG(if(seqno > 0, amt / 100, NULL)), 2) AS parcelas,
-       SUM(if(seqno > 0, 1, 0))                      AS quant,
-       SUM(if(seqno > 0, amt / 100, NULL))           AS totalFinanciado,
+       SUM(IF(seqno = 0, amt / 100, 0))              AS entrada,
+       ROUND(AVG(IF(seqno > 0, amt / 100, NULL)), 2) AS parcelas,
+       SUM(IF(seqno > 0, 1, 0))                      AS quant,
+       SUM(IF(seqno > 0, amt / 100, NULL))           AS totalFinanciado,
        SUM(amt / 100)                                AS totalSimuldado,
        SUM(chargeamt / 100)                          AS totalJuros
 FROM sqldados.eordcr AS E
@@ -68,6 +81,9 @@ SELECT P.storeno,
        timePedido,
        P.custno,
        nome,
+       documento,
+       dtNascimento,
+       IFNULL(R.renda, 0.00)                            AS renda,
        filial,
        valor,
        desconto,
@@ -82,5 +98,7 @@ SELECT P.storeno,
 FROM TPedido            AS P
   INNER JOIN TSIMULADOR AS S
 	       USING (storeno, pedido)
+  LEFT JOIN  T_RENDA    AS R
+	       USING (custno)
 ORDER BY datePedido, timePedido
 
