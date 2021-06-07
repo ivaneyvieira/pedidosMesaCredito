@@ -31,7 +31,7 @@ import com.vaadin.flow.theme.lumo.Lumo
      shortName = AppConfig.shortName,
      iconPath = AppConfig.iconPath,
      enableInstallPrompt = false)
-class PedidoMesaCreditoLayout: AppLayout() {
+class PedidoMesaCreditoLayout : AppLayout() {
   init {
     isDrawerOpened = false
     navbar {

@@ -4,7 +4,6 @@ import br.com.astrosoft.AppConfig
 import br.com.astrosoft.framework.view.SubWindowPDF
 import br.com.astrosoft.framework.view.ViewLayout
 import br.com.astrosoft.framework.view.tabGrid
-import br.com.astrosoft.pedidosMesaCredito.model.Capacitor
 import br.com.astrosoft.pedidosMesaCredito.model.beans.Contrato
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario
@@ -13,19 +12,15 @@ import br.com.astrosoft.pedidosMesaCredito.model.beans.UserSaci
 import br.com.astrosoft.pedidosMesaCredito.view.layout.PedidoMesaCreditoLayout
 import br.com.astrosoft.pedidosMesaCredito.viewmodel.*
 import com.github.mvysny.karibudsl.v10.*
-import com.vaadin.flow.component.*
-import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.AttachEvent
+import com.vaadin.flow.component.DetachEvent
+import com.vaadin.flow.component.UI
 import com.vaadin.flow.component.dependency.HtmlImport
-import com.vaadin.flow.component.dialog.Dialog
 import com.vaadin.flow.component.formlayout.FormLayout
-import com.vaadin.flow.component.html.Div
-import com.vaadin.flow.component.html.IFrame
 import com.vaadin.flow.component.textfield.TextFieldVariant.LUMO_SMALL
 import com.vaadin.flow.data.binder.Binder
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
-import com.vaadin.flow.server.Command
-
 
 @Route(layout = PedidoMesaCreditoLayout::class)
 @PageTitle(AppConfig.title)
@@ -60,8 +55,7 @@ class PedidoMesaCreditoView : ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoM
     viewModel.pesquisaCapacitor(pedidoMesaCredito)
   }
 
-  override fun openLink(link: String) {
-    /*
+  override fun openLink(link: String) {/*
     val dialog = Dialog()
     val frame = IFrame(link)
     dialog.add(frame)
@@ -76,7 +70,7 @@ class PedidoMesaCreditoView : ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoM
     }, Key.ESCAPE)
     dialog.add(Div(closeButton))
     dialog.open()*/
-    ui.ifPresent {ui->
+    ui.ifPresent { ui ->
       ui.page.open(link, "_blank")
     }
   }
@@ -140,10 +134,7 @@ class PedidoMesaCreditoView : ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoM
   override val filtroContrato: IFiltroContrato
     get() = gridContrato.filterBar as IFiltroContrato
 
-  override fun marcaStatusCrediario(
-    pedidoMesaCredito: PedidoMesaCredito?,
-    status: StatusCrediario
-  ) {
+  override fun marcaStatusCrediario(pedidoMesaCredito: PedidoMesaCredito?, status: StatusCrediario) {
     marcaUsuario(pedidoMesaCredito) { user, pedido ->
       viewModel.marcaStatusCrediario(pedido, status, user)
     }
@@ -155,19 +146,16 @@ class PedidoMesaCreditoView : ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoM
 
   override fun selectTab(status: StatusCrediario) {
     when (status) {
-      ABERTO -> tabMain.selectedIndex = 0
-      ANALISE -> tabMain.selectedIndex = 1
-      PENDENTE -> tabMain.selectedIndex = 2
-      APROVADO -> tabMain.selectedIndex = 3
+      ABERTO    -> tabMain.selectedIndex = 0
+      ANALISE   -> tabMain.selectedIndex = 1
+      PENDENTE  -> tabMain.selectedIndex = 2
+      APROVADO  -> tabMain.selectedIndex = 3
       REPROVADO -> tabMain.selectedIndex = 4
-      CONTRATO -> tabMain.selectedIndex = 5
+      CONTRATO  -> tabMain.selectedIndex = 5
     }
   }
 
-  private fun marcaUsuario(
-    pedidoMesaCredito: PedidoMesaCredito?,
-    action: (UserSaci, PedidoMesaCredito) -> Unit
-  ) {
+  private fun marcaUsuario(pedidoMesaCredito: PedidoMesaCredito?, action: (UserSaci, PedidoMesaCredito) -> Unit) {
     if (pedidoMesaCredito == null) showError("Pedido não selecionado")
     else {
       val userSaci = AppConfig.userSaci as UserSaci
@@ -181,10 +169,7 @@ class PedidoMesaCreditoView : ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoM
     }
   }
 
-  private fun desmarcaUsuario(
-    pedidoMesaCredito: PedidoMesaCredito?,
-    action: (PedidoMesaCredito) -> Unit
-  ) {
+  private fun desmarcaUsuario(pedidoMesaCredito: PedidoMesaCredito?, action: (PedidoMesaCredito) -> Unit) {
     if (pedidoMesaCredito == null) showError("Pedido não selecionado")
     else action(pedidoMesaCredito)
   }
@@ -198,8 +183,7 @@ class PedidoMesaCreditoView : ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoM
     const val TAB_CONTRATO: String = "Contratos"
   }
 
-  inner class FeederThread(private val ui: UI, val viewModel: PedidoMesaCreditoViewModel) :
-    Thread() {
+  inner class FeederThread(private val ui: UI, val viewModel: PedidoMesaCreditoViewModel) : Thread() {
     override fun run() {
       try {
         while (true) {

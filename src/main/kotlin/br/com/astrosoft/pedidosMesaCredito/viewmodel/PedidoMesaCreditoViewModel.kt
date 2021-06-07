@@ -13,8 +13,7 @@ import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.*
 import br.com.astrosoft.pedidosMesaCredito.model.beans.UserSaci
 import br.com.astrosoft.pedidosMesaCredito.model.json.InputCapacitor
 
-class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView) :
-  ViewModel<IPedidoMesaCreditoView>(view) {
+class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView) : ViewModel<IPedidoMesaCreditoView>(view) {
   fun updateGridAberto() {
     view.updateGridAberto(listAberto())
   }
@@ -22,9 +21,7 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView) :
   private fun listAberto(): List<PedidoMesaCredito> {
     val filtro = view.filtroAberto
     return PedidoMesaCredito.listaAberto(view.userSaci()).filter {
-      it.filtroPedido(filtro.pedido()) && it.filtroCliente(filtro.cliente()) && it.filtroAnalista(
-        filtro.analista()
-      )
+      it.filtroPedido(filtro.pedido()) && it.filtroCliente(filtro.cliente()) && it.filtroAnalista(filtro.analista())
     }
   }
 
@@ -35,9 +32,7 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView) :
   private fun listAnalise(): List<PedidoMesaCredito> {
     val filtro = view.filtroAnalise
     return PedidoMesaCredito.listaAnalise(view.userSaci()).filter {
-      it.filtroPedido(filtro.pedido()) && it.filtroCliente(filtro.cliente()) && it.filtroAnalista(
-        filtro.analista()
-      )
+      it.filtroPedido(filtro.pedido()) && it.filtroCliente(filtro.cliente()) && it.filtroAnalista(filtro.analista())
     }
   }
 
@@ -48,9 +43,7 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView) :
   private fun listAprovado(): List<PedidoMesaCredito> {
     val filtro = view.filtroAprovado
     return PedidoMesaCredito.listaAprovado(view.userSaci()).filter {
-      it.filtroPedido(filtro.pedido()) && it.filtroCliente(filtro.cliente()) && it.filtroAnalista(
-        filtro.analista()
-      )
+      it.filtroPedido(filtro.pedido()) && it.filtroCliente(filtro.cliente()) && it.filtroAnalista(filtro.analista())
     }
   }
 
@@ -61,9 +54,7 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView) :
   private fun listReprovado(): List<PedidoMesaCredito> {
     val filtro = view.filtroReprovado
     return PedidoMesaCredito.listaReprovado(view.userSaci()).filter {
-      it.filtroPedido(filtro.pedido()) && it.filtroCliente(filtro.cliente()) && it.filtroAnalista(
-        filtro.analista()
-      )
+      it.filtroPedido(filtro.pedido()) && it.filtroCliente(filtro.cliente()) && it.filtroAnalista(filtro.analista())
     }
   }
 
@@ -74,30 +65,26 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView) :
   private fun listPendente(): List<PedidoMesaCredito> {
     val filtro = view.filtroPendente
     return PedidoMesaCredito.listaPendente(view.userSaci()).filter {
-      it.filtroPedido(filtro.pedido()) && it.filtroCliente(filtro.cliente()) && it.filtroAnalista(
-        filtro.analista()
-      )
+      it.filtroPedido(filtro.pedido()) && it.filtroCliente(filtro.cliente()) && it.filtroAnalista(filtro.analista())
     }
   }
 
-  fun marcaStatusCrediario(pedido: PedidoMesaCredito, status: StatusCrediario, userSaci: UserSaci) =
-    exec {
-      val statusPedido = pedido.findPedidoStatus() ?: fail("Pedido não encontrado")
-      if (statusPedido.userAnalise == 0 || statusPedido.userAnalise == userSaci.no) pedido.marcaStatusCrediario(
-        status,
-        userSaci
-      )
-      else fail("Esse pedido pertente a analista ${statusPedido.analistaName}")
-      when (status) {
-        ABERTO -> updateGridAberto()
-        ANALISE -> updateGridAnalise()
-        APROVADO -> updateGridAprovado()
-        REPROVADO -> updateGridReprovado()
-        PENDENTE -> updateGridPendente()
-        CONTRATO -> updateGridContrato()
-      }
-      view.selectTab(status)
+  fun marcaStatusCrediario(pedido: PedidoMesaCredito, status: StatusCrediario, userSaci: UserSaci) = exec {
+    val statusPedido = pedido.findPedidoStatus() ?: fail("Pedido não encontrado")
+    when {
+      statusPedido.statusCrediario != status.num -> pedido.marcaStatusCrediario(status, userSaci)
+      statusPedido.userAnalise != userSaci.no    -> fail("Esse pedido pertente a analista ${statusPedido.analistaName}")
     }
+    when (status) {
+      ABERTO    -> updateGridAberto()
+      ANALISE   -> updateGridAnalise()
+      APROVADO  -> updateGridAprovado()
+      REPROVADO -> updateGridReprovado()
+      PENDENTE  -> updateGridPendente()
+      CONTRATO  -> updateGridContrato()
+    }
+    view.selectTab(status)
+  }
 
   fun updateGridContrato() {
     view.updateGridContrato(listContrato())
@@ -116,7 +103,7 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView) :
     view.showContratoPdf(bytePdf)
   }
 
-  fun pesquisaCapacitor(pedidoMesaCredito: PedidoMesaCredito?) = exec{
+  fun pesquisaCapacitor(pedidoMesaCredito: PedidoMesaCredito?) = exec {
     if (pedidoMesaCredito == null) fail("Nenhum pedido foi selecionado")
     else {
       val input = pedidoMesaCredito.toInputCapacitor()
@@ -215,11 +202,9 @@ interface IPedidoMesaCreditoView : IView {
 data class SenhaUsuario(var nome: String, var senha: String?)
 
 fun PedidoMesaCredito.toInputCapacitor(): InputCapacitor {
-  return InputCapacitor(
-    documento = this.documento.replace("\\D".toRegex(), ""),
-    nome = this.nome,
-    dataNascimento = this.dtNascimento,
-    renda = this.renda,
-    consultaBacen = DB("saci").consultaBACEN
-  )
+  return InputCapacitor(documento = this.documento.replace("\\D".toRegex(), ""),
+                        nome = this.nome,
+                        dataNascimento = this.dtNascimento,
+                        renda = this.renda,
+                        consultaBacen = DB("saci").consultaBACEN)
 }

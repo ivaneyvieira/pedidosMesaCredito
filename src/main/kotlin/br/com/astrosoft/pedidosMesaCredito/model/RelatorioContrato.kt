@@ -14,7 +14,7 @@ class RelatorioContrato(val contrato: Contrato) {
     val collection = JRBeanCollectionDataSource(listOf(contrato.copy()))
 
     val print = JasperFillManager.fillReport(jasperInputStream, parameter, collection)
-    
+
     return JasperExportManager.exportReportToPdf(print) ?: ByteArray(0)
   }
 }

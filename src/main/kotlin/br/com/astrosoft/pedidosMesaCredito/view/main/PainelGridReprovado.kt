@@ -13,9 +13,11 @@ import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.provider.DataProvider
 import com.vaadin.flow.data.provider.ListDataProvider
 
-class PainelGridReprovado(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
-  PainelGrid<PedidoMesaCredito>(view, blockUpdate) {
+class PainelGridReprovado(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit) :
+        PainelGrid<PedidoMesaCredito>(view, blockUpdate) {
   override fun Grid<PedidoMesaCredito>.gridConfig() {
+
+    colTipoContrato()
     colNumPedido()
     colDataHoraPedido()
     colCodigo()
@@ -28,37 +30,37 @@ class PainelGridReprovado(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit)
     colAnalista()
     colParcelasTotal()
     colLimiteDisponivel()
-    (dataProvider as ListDataProvider).setSortComparator {o1, o2 ->
+    (dataProvider as ListDataProvider).setSortComparator { o1, o2 ->
       o1.dataHoraStatus.compareTo(o2.dataHoraStatus)
     }
   }
-  
+
   override fun filterBar() = FilterBarReprovado()
-  
-  inner class FilterBarReprovado: FilterBar(), IFiltroReprovado {
+
+  inner class FilterBarReprovado : FilterBar(), IFiltroReprovado {
     lateinit var edtPedido: IntegerField
     lateinit var edtCliente: TextField
     lateinit var edtAnalista: TextField
-    
+
     override fun FilterBar.contentBlock() {
       edtPedido = pedido {
-        addValueChangeListener {blockUpdate()}
+        addValueChangeListener { blockUpdate() }
       }
       edtCliente = cliente {
-        addValueChangeListener {blockUpdate()}
+        addValueChangeListener { blockUpdate() }
       }
       edtAnalista = analista {
-        addValueChangeListener {blockUpdate()}
+        addValueChangeListener { blockUpdate() }
       }
     }
-    
+
     override fun pedido(): Int = edtPedido.value ?: 0
-    
+
     override fun cliente(): String = edtCliente.value ?: ""
-    
+
     override fun analista(): String = edtAnalista.value ?: ""
   }
-  
+
   override fun (@VaadinDsl HasComponents).gridPanel(dataProvider: DataProvider<PedidoMesaCredito, *>,
                                                     block: (Grid<PedidoMesaCredito>).() -> Unit): Grid<PedidoMesaCredito> {
     return grid(dataProvider, block)

@@ -13,17 +13,15 @@ import okhttp3.Request.Builder
 import okhttp3.RequestBody
 import java.io.IOException
 
-
 class Capacitor {
   companion object {
     private val db = DB("saci")
-    val ACCESS_KEY = db.accessKey
-    val SECRET_KEY = db.secretKey
+    private val ACCESS_KEY = db.accessKey
+    private val SECRET_KEY = db.secretKey
     private val COMPANY_ID = db.companyId
     private val COST_CENTER = db.costCenter
     private val JSON = MediaType.parse("application/json")
     private val URL = "https://app.capacitor.digital/api/rules/PoliticaCreditoCDCPF"
-
 
     fun execute(input: InputCapacitor, tentativas: Int): JsonObject? {
       for (i in 0..tentativas) {
@@ -38,24 +36,26 @@ class Capacitor {
 
     fun execute(input: InputCapacitor): JsonObject? {
       return try {
-        val client = OkHttpClient.Builder()
-                .connectionSpecs(listOf(ConnectionSpec.MODERN_TLS,
-                                        ConnectionSpec.COMPATIBLE_TLS)) //    .connectTimeout(2, TimeUnit.SECONDS)
-                //    .readTimeout(2, TimeUnit.SECONDS)
-                //    .writeTimeout(2, TimeUnit.SECONDS)
-                .build()
+        val client =
+                OkHttpClient.Builder()
+                  .connectionSpecs(listOf(ConnectionSpec.MODERN_TLS,
+                                          ConnectionSpec.COMPATIBLE_TLS)) //    .connectTimeout(2, TimeUnit.SECONDS)
+                  //    .readTimeout(2, TimeUnit.SECONDS)
+                  //    .writeTimeout(2, TimeUnit.SECONDS)
+                  .build()
         val jsonInput = input.toJons()
         println(jsonInput)
         val body = RequestBody.create(JSON, jsonInput)
-        val request = Builder().url(URL)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Cookie",
-                           "AWSALB=RmDAnNSB3/3XlGqlXbKJBlaC0uQK6zFDXozzBlPObBWqshGH02dvClyZBqJ3PRv1GcXUkzfU2fSWCh+yA4kKagLw81tShYSwaLeGpHT8U0JOo/QPset4SHPEotQF; AWSALBCORS=RmDAnNSB3/3XlGqlXbKJBlaC0uQK6zFDXozzBlPObBWqshGH02dvClyZBqJ3PRv1GcXUkzfU2fSWCh+yA4kKagLw81tShYSwaLeGpHT8U0JOo/QPset4SHPEotQF")
-                .addHeader("AccessKey", ACCESS_KEY)
-                .addHeader("SecretKey", SECRET_KEY) //.addHeader("X-Billing-Company-Id", COMPANY_ID)
-                // .addHeader("X-Billing-Cost-Center", COST_CENTER.toString())
-                .post(body)
-                .build()
+        val request =
+                Builder().url(URL)
+                  .addHeader("Content-Type", "application/json")
+                  .addHeader("Cookie",
+                             "AWSALB=RmDAnNSB3/3XlGqlXbKJBlaC0uQK6zFDXozzBlPObBWqshGH02dvClyZBqJ3PRv1GcXUkzfU2fSWCh+yA4kKagLw81tShYSwaLeGpHT8U0JOo/QPset4SHPEotQF; AWSALBCORS=RmDAnNSB3/3XlGqlXbKJBlaC0uQK6zFDXozzBlPObBWqshGH02dvClyZBqJ3PRv1GcXUkzfU2fSWCh+yA4kKagLw81tShYSwaLeGpHT8U0JOo/QPset4SHPEotQF")
+                  .addHeader("AccessKey", ACCESS_KEY)
+                  .addHeader("SecretKey", SECRET_KEY) //.addHeader("X-Billing-Company-Id", COMPANY_ID)
+                  // .addHeader("X-Billing-Cost-Center", COST_CENTER.toString())
+                  .post(body)
+                  .build()
 
         val output = client.newCall(request).execute().use { response ->
           if (!response.isSuccessful) throw IOException("Unexpected code $response")
@@ -72,14 +72,15 @@ class Capacitor {
 
     fun executeUnirest(input: InputCapacitor) {
       val jsonInput = input.toJons()
-      val response = Unirest.post(URL)
-              .header("Content-Type", "application/json")
-              .header("AccessKey", ACCESS_KEY)
-              .header("SecretKey", SECRET_KEY)
-              .header("Cookie",
-                      "AWSALB=RmDAnNSB3/3XlGqlXbKJBlaC0uQK6zFDXozzBlPObBWqshGH02dvClyZBqJ3PRv1GcXUkzfU2fSWCh+yA4kKagLw81tShYSwaLeGpHT8U0JOo/QPset4SHPEotQF; AWSALBCORS=RmDAnNSB3/3XlGqlXbKJBlaC0uQK6zFDXozzBlPObBWqshGH02dvClyZBqJ3PRv1GcXUkzfU2fSWCh+yA4kKagLw81tShYSwaLeGpHT8U0JOo/QPset4SHPEotQF")
-              .body(jsonInput)
-              .asString()
+      val response =
+              Unirest.post(URL)
+                .header("Content-Type", "application/json")
+                .header("AccessKey", ACCESS_KEY)
+                .header("SecretKey", SECRET_KEY)
+                .header("Cookie",
+                        "AWSALB=RmDAnNSB3/3XlGqlXbKJBlaC0uQK6zFDXozzBlPObBWqshGH02dvClyZBqJ3PRv1GcXUkzfU2fSWCh+yA4kKagLw81tShYSwaLeGpHT8U0JOo/QPset4SHPEotQF; AWSALBCORS=RmDAnNSB3/3XlGqlXbKJBlaC0uQK6zFDXozzBlPObBWqshGH02dvClyZBqJ3PRv1GcXUkzfU2fSWCh+yA4kKagLw81tShYSwaLeGpHT8U0JOo/QPset4SHPEotQF")
+                .body(jsonInput)
+                .asString()
     }
 
     /*

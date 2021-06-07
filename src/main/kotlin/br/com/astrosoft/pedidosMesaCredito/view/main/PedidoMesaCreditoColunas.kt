@@ -1,10 +1,6 @@
 package br.com.astrosoft.pedidosMesaCredito.view.main
 
-import br.com.astrosoft.framework.view.addColumnDouble
-import br.com.astrosoft.framework.view.addColumnInt
-import br.com.astrosoft.framework.view.addColumnLocalDateTime
-import br.com.astrosoft.framework.view.addColumnString
-import br.com.astrosoft.framework.view.right
+import br.com.astrosoft.framework.view.*
 import br.com.astrosoft.pedidosMesaCredito.model.beans.Contrato
 import br.com.astrosoft.pedidosMesaCredito.model.beans.PedidoMesaCredito
 import com.github.mvysny.karibudsl.v10.VaadinDsl
@@ -36,6 +32,11 @@ fun Grid<PedidoMesaCredito>.colDataHoraPedido() = addColumnLocalDateTime(PedidoM
 
 fun Grid<PedidoMesaCredito>.colNome() = addColumnString(PedidoMesaCredito::nome) {
   setHeader("Nome")
+  isSortable = false
+}
+
+fun Grid<PedidoMesaCredito>.colTipoContrato() = addColumnString(PedidoMesaCredito::tipoContrato) {
+  setHeader("Tipo")
   isSortable = false
 }
 

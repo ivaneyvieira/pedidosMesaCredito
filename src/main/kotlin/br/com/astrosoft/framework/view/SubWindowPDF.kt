@@ -12,14 +12,14 @@ import com.vaadin.flow.server.StreamResource
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 
-class SubWindowPDF(chave: String, bytesBoletos: ByteArray): Dialog() {
+class SubWindowPDF(chave: String, bytesBoletos: ByteArray) : Dialog() {
   init {
     width = "100%"
     height = "100%"
     val timeNumber = System.currentTimeMillis()
     val resourcePDF =
-      StreamResource("${chave}_${timeNumber}.pdf",
-                     ConverteByte(bytesBoletos)) //val buttonWrapper = FileDownloadWrapper(resourcePDF)
+            StreamResource("${chave}_${timeNumber}.pdf",
+                           ConverteByte(bytesBoletos)) //val buttonWrapper = FileDownloadWrapper(resourcePDF)
     verticalLayout {
       isPadding = false
       horizontalLayout {
@@ -31,14 +31,14 @@ class SubWindowPDF(chave: String, bytesBoletos: ByteArray): Dialog() {
           }
         }
       }
-      
+
       addAndExpand(PDFViewer(resourcePDF))
     }
     isCloseOnEsc = true
   }
 }
 
-class ConverteByte(val bytesBoletos: ByteArray): InputStreamFactory {
+class ConverteByte(val bytesBoletos: ByteArray) : InputStreamFactory {
   override fun createInputStream(): InputStream {
     return ByteArrayInputStream(bytesBoletos)
   }

@@ -15,14 +15,15 @@ import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.provider.DataProvider
 import com.vaadin.flow.data.provider.ListDataProvider
 
-class PainelGridAnalise(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
-  PainelGrid<PedidoMesaCredito>(view, blockUpdate) {
+class PainelGridAnalise(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit) :
+        PainelGrid<PedidoMesaCredito>(view, blockUpdate) {
   override fun Grid<PedidoMesaCredito>.gridConfig() {
     addColumnButton(VaadinIcon.THUMBS_UP_O, "Aprova proposta", view::marcaAprovado)
     addColumnButton(VaadinIcon.THUMBS_DOWN_O, "Reprova proposta", view::marcaReprovado)
     addColumnButton(VaadinIcon.CLOCK, "Proposta pendente", view::marcaPendente)
     addColumnButton(VaadinIcon.COG_O, "Capacitor", view::pesquisaCapacitor)
 
+    colTipoContrato()
     colNumPedido()
     colDataHoraPedido()
     colCodigo()
@@ -35,37 +36,37 @@ class PainelGridAnalise(view: IPedidoMesaCreditoView, blockUpdate: () -> Unit):
     colAnalista()
     colParcelasTotal()
     colLimiteDisponivel()
-    (dataProvider as ListDataProvider).setSortComparator {o1, o2 ->
+    (dataProvider as ListDataProvider).setSortComparator { o1, o2 ->
       o1.dataHoraStatus.compareTo(o2.dataHoraStatus)
     }
   }
-  
+
   override fun filterBar() = FilterBarPedido()
-  
-  inner class FilterBarPedido: FilterBar(), IFiltroAnalise {
+
+  inner class FilterBarPedido : FilterBar(), IFiltroAnalise {
     private lateinit var edtPedido: IntegerField
     private lateinit var edtCliente: TextField
     private lateinit var edtAnalista: TextField
-    
+
     override fun FilterBar.contentBlock() {
       edtPedido = pedido {
-        addValueChangeListener {blockUpdate()}
+        addValueChangeListener { blockUpdate() }
       }
       edtCliente = cliente {
-        addValueChangeListener {blockUpdate()}
+        addValueChangeListener { blockUpdate() }
       }
       edtAnalista = analista {
-        addValueChangeListener {blockUpdate()}
+        addValueChangeListener { blockUpdate() }
       }
     }
-    
+
     override fun pedido(): Int = edtPedido.value ?: 0
-    
+
     override fun cliente(): String = edtCliente.value ?: ""
-    
+
     override fun analista(): String = edtAnalista.value ?: ""
   }
-  
+
   override fun (@VaadinDsl HasComponents).gridPanel(dataProvider: DataProvider<PedidoMesaCredito, *>,
                                                     block: (Grid<PedidoMesaCredito>).() -> Unit): Grid<PedidoMesaCredito> {
     return grid(dataProvider, block)

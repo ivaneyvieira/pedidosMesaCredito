@@ -1,5 +1,5 @@
 DO @DT := 20210111;
-DO @DT := current_date * 1;
+DO @DT := CURRENT_DATE * 1;
 
 DROP TEMPORARY TABLE IF EXISTS T_CONTRATOS;
 CREATE TEMPORARY TABLE T_CONTRATOS (
@@ -99,7 +99,7 @@ CREATE TEMPORARY TABLE T_PARCELA (
 )
 SELECT C.storeno,
        contrno,
-       MIN(X.duedate) as duedate
+       MIN(X.duedate) AS duedate
 FROM T_CONTRATOS           AS C
   INNER JOIN sqldados.itxa AS X
 	       USING (storeno, contrno)
@@ -121,7 +121,7 @@ SELECT CONCAT(C.storeno)                                                        
        LPAD(C.paymno, 3, '0')                                                      AS plano,
        CONCAT(LPAD(C.storeno, 2, '0'), '-', C.contrno)                             AS numeroContrato,
        CAST(IFNULL(G.nomeGrupo, '-') AS CHAR)                                      AS grupo,
-       IFNULL(DATE_FORMAT(IFNULL(G.dataCompra, current_date * 1), '%d/%m/%Y'), '') AS dataVenda,
+       IFNULL(DATE_FORMAT(IFNULL(G.dataCompra, CURRENT_DATE * 1), '%d/%m/%Y'), '') AS dataVenda,
        DATE_FORMAT(CAST(P.duedate AS DATE), '%d/%m/%Y')                            AS dataVencimento,
        analistaNome                                                                AS analistaNome,
        DATE_FORMAT(C.date, '%d/%m/%Y')                                             AS dataContrato,

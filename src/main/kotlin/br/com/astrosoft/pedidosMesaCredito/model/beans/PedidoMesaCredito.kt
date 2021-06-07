@@ -7,29 +7,28 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-data class PedidoMesaCredito(
-  val storeno: Int,
-  val pedido: Int,
-  val status: Int,
-  val datePedido: LocalDate,
-  val timePedido: LocalTime,
-  val custno: Int,
-  val nome: String,
-  val documento: String,
-  val dtNascimento: LocalDate?,
-  val renda: Double,
-  val filial: String,
-  val valor: Double,
-  val desconto: Double,
-  val entrada: Double,
-  val parcelas: Double,
-  val parcelaTotal: Double,
-  val quant: Int,
-  val totalFinanciado: Double,
-  val statusCrediario: Int,
-  val userAnalise: Int,
-  val analistaName: String
-) {
+data class PedidoMesaCredito(val storeno: Int,
+                             val pedido: Int,
+                             val status: Int,
+                             val datePedido: LocalDate,
+                             val timePedido: LocalTime,
+                             val custno: Int,
+                             val nome: String,
+                             val documento: String,
+                             val dtNascimento: LocalDate?,
+                             val renda: Double,
+                             val filial: String,
+                             val valor: Double,
+                             val desconto: Double,
+                             val entrada: Double,
+                             val parcelas: Double,
+                             val parcelaTotal: Double,
+                             val quant: Int,
+                             val totalFinanciado: Double,
+                             val statusCrediario: Int,
+                             val userAnalise: Int,
+                             val analistaName: String,
+                             val tipoContrato: String) {
   fun marcaStatusCrediario(status: StatusCrediario, userSaci: UserSaci) {
     saci.marcaStatusCrediario(storeno, pedido, userSaci.no, status.num)
   }
@@ -44,11 +43,9 @@ data class PedidoMesaCredito(
   fun filtroPedido(pedidoNum: Int) = (pedidoNum == this.pedido) || (pedidoNum == 0)
 
   fun filtroCliente(cliente: String) =
-    (this.nome.startsWith(cliente)) || (cliente == "") || (this.custno.toString()
-      .startsWith(cliente))
+          (this.nome.startsWith(cliente)) || (cliente == "") || (this.custno.toString().startsWith(cliente))
 
-  fun filtroAnalista(analista: String) =
-    (this.analistaName.contains(analista, ignoreCase = true)) || (analista == "")
+  fun filtroAnalista(analista: String) = (this.analistaName.contains(analista, ignoreCase = true)) || (analista == "")
 
   val dataHoraStatus
     get() = LocalDateTime.of(datePedido, timePedido)
@@ -62,16 +59,15 @@ data class PedidoMesaCredito(
     get() = StatusCrediario.valueByNum(statusCrediario)
   val statusPedidoEnum
     get() = StatusSaci.valueByNum(status)
+  val tipoContratoEnum
+    get() = TipoContrato.valueByName(tipoContrato)
   val statusPedidoStr
     get() = statusPedidoEnum.descricao
   val statusCrediarioStr
     get() = statusCrediarioEnum.descricao
 
   companion object {
-    private fun listaPedidos(
-      userSaci: UserSaci?,
-      status: List<StatusCrediario>
-    ): List<PedidoMesaCredito> {
+    private fun listaPedidos(userSaci: UserSaci?, status: List<StatusCrediario>): List<PedidoMesaCredito> {
       return saci.listaPedidoMesa(status.map { it.num }).filtroLoja(userSaci?.storeno)
     }
 
@@ -129,5 +125,13 @@ enum class StatusSaci(val numero: Int, val descricao: String, val analise: Boole
 
   companion object {
     fun valueByNum(num: Int) = values().firstOrNull { it.numero == num } ?: INCLUIDO
+  }
+}
+
+enum class TipoContrato(val codigo: String, val descricao: String) {
+  CRE("CRE", "Crediário"), DEB("DEB", "Débito em Folha"), PIN("PIN", "Pincred");
+
+  companion object {
+    fun valueByName(codigo: String) = TipoContrato.values().firstOrNull { it.codigo == codigo } ?: CRE
   }
 }

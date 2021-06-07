@@ -2,11 +2,19 @@ DROP TABLE IF EXISTS TMETODO_CREDIARIO;
 CREATE TEMPORARY TABLE TMETODO_CREDIARIO (
   PRIMARY KEY (paymno)
 )
-SELECT no AS paymno,
+SELECT no  AS paymno,
        name,
-       sname
+       sname,
+       CASE
+	 WHEN no IN (900, 903, 904, 905, 913, 953)
+	   THEN 'CRE'
+	 WHEN no IN (923)
+	   THEN 'DEB'
+	 WHEN no IN (960)
+	   THEN 'PIN'
+       END AS tipoContrato
 FROM sqldados.paym
-WHERE no IN (900, 903, 904, 905, 913, 953);
+WHERE no IN (900, 903, 904, 905, 913, 953, 923, 960);
 
 DO @HOJE := CURRENT_DATE * 1;
 DO @DATA := @HOJE;
@@ -29,7 +37,8 @@ SELECT O.storeno,
        discount / 100                                     AS desconto,
        O.s16                                              AS statusCrediario,
        O.s15                                              AS userAnalise,
-       IFNULL(U.auxStr, '')                               AS analistaName
+       IFNULL(U.auxStr, '')                               AS analistaName,
+       M.tipoContrato                                     AS tipoContrato
 FROM sqldados.eord             AS O
   LEFT JOIN  sqldados.custp    AS C
 	       ON C.no = O.custno
@@ -68,7 +77,8 @@ SELECT E.storeno,
        SUM(IF(seqno > 0, 1, 0))                      AS quant,
        SUM(IF(seqno > 0, amt / 100, NULL))           AS totalFinanciado,
        SUM(amt / 100)                                AS totalSimuldado,
-       SUM(chargeamt / 100)                          AS totalJuros
+       SUM(chargeamt / 100)                          AS totalJuros,
+       P.tipoContrato                                AS tipoContrato
 FROM sqldados.eordcr AS E
   INNER JOIN TPedido AS P
 	       ON P.storeno = E.storeno AND P.pedido = E.ordno
@@ -94,7 +104,8 @@ SELECT P.storeno,
        (valor - entrada)                                AS totalFinanciado,
        P.statusCrediario                                AS statusCrediario,
        P.userAnalise                                    AS userAnalise,
-       P.analistaName                                   AS analistaName
+       P.analistaName                                   AS analistaName,
+       S.tipoContrato                                   AS tipoContrato
 FROM TPedido            AS P
   INNER JOIN TSIMULADOR AS S
 	       USING (storeno, pedido)
