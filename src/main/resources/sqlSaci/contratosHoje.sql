@@ -27,6 +27,7 @@ FROM sqldados.inst          AS I
 	      ON E.no = I.credanal
 WHERE I.date = @DT
   AND I.status IN (0)
+  AND I.paymno IN (900, 903, 904, 905, 913, 953)
 GROUP BY I.storeno, I.contrno;
 
 DROP TEMPORARY TABLE IF EXISTS T_CUSTNO;

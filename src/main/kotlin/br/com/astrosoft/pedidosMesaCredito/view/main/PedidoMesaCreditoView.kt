@@ -1,6 +1,7 @@
 package br.com.astrosoft.pedidosMesaCredito.view.main
 
 import br.com.astrosoft.AppConfig
+import br.com.astrosoft.framework.util.rpad
 import br.com.astrosoft.framework.view.SubWindowPDF
 import br.com.astrosoft.framework.view.ViewLayout
 import br.com.astrosoft.framework.view.tabGrid
@@ -17,6 +18,8 @@ import com.vaadin.flow.component.DetachEvent
 import com.vaadin.flow.component.UI
 import com.vaadin.flow.component.dependency.HtmlImport
 import com.vaadin.flow.component.formlayout.FormLayout
+import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout
 import com.vaadin.flow.component.textfield.TextFieldVariant.LUMO_SMALL
 import com.vaadin.flow.data.binder.Binder
 import com.vaadin.flow.router.PageTitle
@@ -26,6 +29,8 @@ import com.vaadin.flow.router.Route
 @PageTitle(AppConfig.title)
 @HtmlImport("frontend://styles/shared-styles.html")
 class PedidoMesaCreditoView : ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoMesaCreditoView {
+  private lateinit var labelStatus: Label
+  private lateinit var statusBar: HorizontalLayout
   private var userSaci: UserSaci? = null
   private lateinit var thread: FeederThread
   private var tabMain: TabSheet
@@ -55,24 +60,49 @@ class PedidoMesaCreditoView : ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoM
     viewModel.pesquisaCapacitor(pedidoMesaCredito)
   }
 
-  override fun openLink(link: String) {/*
-    val dialog = Dialog()
-    val frame = IFrame(link)
-    dialog.add(frame)
-    dialog.isCloseOnEsc = false
-    dialog.isCloseOnOutsideClick = false
-
-    val closeButton = Button("Fecha") { event ->
-      dialog.close()
-    }
-    Shortcuts.addShortcutListener(dialog, Command {
-      dialog.close()
-    }, Key.ESCAPE)
-    dialog.add(Div(closeButton))
-    dialog.open()*/
+  fun access(runnable: (UI) -> Unit) {
     ui.ifPresent { ui ->
+      ui.access {
+        runnable(ui)
+      }
+    }
+  }
+
+  override fun openLink(link: String) {
+    access { ui ->
       ui.page.open(link, "_blank")
     }
+  }
+
+  fun animateOn(numPontos : Int) {
+    access {
+      labelStatus.text = "Processando " + "".rpad(numPontos, ".")
+    }
+  }
+
+  val threadAnimate = ThreadCancel(onCommand = {
+    animateOn(1)
+    Thread.sleep(500)
+    animateOn(2)
+    Thread.sleep(500)
+    animateOn(3)
+    Thread.sleep(500)
+  }, onStart = {
+    access {
+      this.statusBar.isVisible = true
+    }
+  }, onStop = {
+    access {
+      this.statusBar.isVisible = false
+    }
+  })
+
+  override fun startAnimate() {
+    threadAnimate.start()
+  }
+
+  override fun stopAnimate() {
+    threadAnimate.cancel()
   }
 
   override fun onAttach(attachEvent: AttachEvent) {
@@ -93,6 +123,10 @@ class PedidoMesaCreditoView : ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoM
       tabGrid(TAB_APROVADO, gridAprovado)
       tabGrid(TAB_REPROVADO, gridReprovado)
       tabGrid(TAB_CONTRATO, gridContrato)
+    }
+    statusBar = horizontalLayout {
+      labelStatus = label("Processando ...")
+      isVisible = false
     }
     viewModel.updateGridAberto()
   }
@@ -188,7 +222,6 @@ class PedidoMesaCreditoView : ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoM
       try {
         while (true) {
           sleep(10000)
-
           ui.access {
             viewModel.updateGridAberto()
           }
@@ -197,6 +230,24 @@ class PedidoMesaCreditoView : ViewLayout<PedidoMesaCreditoViewModel>(), IPedidoM
         e.printStackTrace()
       }
     }
+  }
+}
+
+class ThreadCancel(val onStart: () -> Unit = {}, val onCommand: () -> Unit = {}, val onStop: () -> Unit = {}) :
+        Thread() {
+  private var canCancel: Boolean = false
+
+  override fun run() {
+    canCancel = true
+    onStart()
+    while (canCancel) {
+      onCommand()
+    }
+    onStop()
+  }
+
+  fun cancel() {
+    canCancel = false
   }
 }
 

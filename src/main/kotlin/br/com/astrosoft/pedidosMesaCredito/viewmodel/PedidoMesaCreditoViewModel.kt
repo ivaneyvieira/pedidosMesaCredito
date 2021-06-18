@@ -12,6 +12,7 @@ import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario
 import br.com.astrosoft.pedidosMesaCredito.model.beans.StatusCrediario.*
 import br.com.astrosoft.pedidosMesaCredito.model.beans.UserSaci
 import br.com.astrosoft.pedidosMesaCredito.model.json.InputCapacitor
+import kotlin.concurrent.thread
 
 class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView) : ViewModel<IPedidoMesaCreditoView>(view) {
   fun updateGridAberto() {
@@ -106,12 +107,16 @@ class PedidoMesaCreditoViewModel(view: IPedidoMesaCreditoView) : ViewModel<IPedi
   fun pesquisaCapacitor(pedidoMesaCredito: PedidoMesaCredito?) = exec {
     if (pedidoMesaCredito == null) fail("Nenhum pedido foi selecionado")
     else {
-      val input = pedidoMesaCredito.toInputCapacitor()
-      val output = Capacitor.execute(input, 3)
+      thread {
+        view.startAnimate()
+        val input = pedidoMesaCredito.toInputCapacitor()
+        val output = Capacitor.execute(input, 3)
 
-      val requestIdentification = output?.string("requestIdentification") ?: ""
-      val link = Capacitor.link(requestIdentification)
-      view.openLink(link)
+        val requestIdentification = output?.string("requestIdentification") ?: ""
+        val link = Capacitor.link(requestIdentification)
+        view.openLink(link)
+        view.stopAnimate()
+      }
     }
   }
 }
@@ -197,6 +202,9 @@ interface IPedidoMesaCreditoView : IView {
   fun userSaci(): UserSaci?
   fun showContratoPdf(report: ByteArray)
   fun openLink(link: String)
+
+  fun startAnimate()
+  fun stopAnimate()
 }
 
 data class SenhaUsuario(var nome: String, var senha: String?)
