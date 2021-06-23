@@ -10,7 +10,7 @@ SELECT no  AS paymno,
 	   THEN 'CRE'
 	 WHEN no IN (923)
 	   THEN 'DEB'
-	 WHEN no IN (960)
+	 WHEN no IN (960, 962)
 	   THEN 'PIN'
        END AS tipoContrato
 FROM sqldados.paym
