@@ -14,7 +14,7 @@ SELECT no  AS paymno,
 	   THEN 'PIN'
        END AS tipoContrato
 FROM sqldados.paym
-WHERE no IN (900, 903, 904, 905, 913, 953, 923, 960);
+WHERE no IN (900, 903, 904, 905, 913, 953, 923, 960, 962);
 
 DO @HOJE := CURRENT_DATE * 1;
 DO @DATA := @HOJE;
